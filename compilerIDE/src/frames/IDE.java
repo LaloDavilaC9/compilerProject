@@ -7,10 +7,14 @@ package frames;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -231,11 +235,21 @@ public class IDE extends javax.swing.JFrame {
 
         itemNuevoArchivo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         itemNuevoArchivo.setText("Nuevo archivo");
+        itemNuevoArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemNuevoArchivoActionPerformed(evt);
+            }
+        });
         menuArchivo.add(itemNuevoArchivo);
         menuArchivo.add(separadorGuardar);
 
         itemGuardarArchivo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         itemGuardarArchivo.setText("Guardar");
+        itemGuardarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemGuardarArchivoActionPerformed(evt);
+            }
+        });
         menuArchivo.add(itemGuardarArchivo);
 
         itemGuardarComo.setText("Guardar como");
@@ -334,8 +348,9 @@ public class IDE extends javax.swing.JFrame {
         String data = "";
         if(eleccion == JFileChooser.APPROVE_OPTION){
             try {
+                this.pathArchivo = j.getSelectedFile().toPath();
                 data = new String(Files.readAllBytes(j.getSelectedFile().toPath()));
-                System.out.println("LO LOGRÓ");
+                //System.out.println("LO LOGRÓ");
                 this.textCodigo.setText(data);
             } catch (IOException ex) {
 
@@ -352,6 +367,31 @@ public class IDE extends javax.swing.JFrame {
     private void menuArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuArchivoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_menuArchivoActionPerformed
+
+    private void itemNuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevoArchivoActionPerformed
+        this.textCodigo.setText("");
+    }//GEN-LAST:event_itemNuevoArchivoActionPerformed
+
+    private void itemGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarArchivoActionPerformed
+        FileWriter file = null;
+
+        try {
+            file = new FileWriter(this.pathArchivo.toFile(),false);
+            BufferedWriter writer = new BufferedWriter(file);
+            writer.write(textCodigo.getText());
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                file.close();
+            } catch (IOException ex) {
+                Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }//GEN-LAST:event_itemGuardarArchivoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -371,6 +411,7 @@ public class IDE extends javax.swing.JFrame {
         });
     }
 
+    private Path pathArchivo;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar.Separator SeparadorA;
     private javax.swing.JToolBar barraHerrArchivo;
