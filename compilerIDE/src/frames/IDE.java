@@ -10,8 +10,11 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -35,6 +38,8 @@ public class IDE extends javax.swing.JFrame {
 
         panelEditorCompilador = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        textCodigo = new javax.swing.JTextArea();
         panelCompilacion = new javax.swing.JTabbedPane();
         panelLexico = new javax.swing.JScrollPane();
         textPaneLexico = new javax.swing.JTextPane();
@@ -87,15 +92,25 @@ public class IDE extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(255, 204, 204));
 
+        textCodigo.setColumns(20);
+        textCodigo.setRows(5);
+        jScrollPane1.setViewportView(textCodigo);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         panelEditorCompilador.setLeftComponent(jPanel2);
@@ -200,6 +215,11 @@ public class IDE extends javax.swing.JFrame {
         barraHerrArchivo.add(botonRehacer);
 
         menuArchivo.setText("Archivo");
+        menuArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuArchivoActionPerformed(evt);
+            }
+        });
 
         itemAbrirArchivo.setText("Abrir");
         itemAbrirArchivo.addActionListener(new java.awt.event.ActionListener() {
@@ -303,12 +323,35 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_itemCortarActionPerformed
 
     private void itemAbrirArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAbrirArchivoActionPerformed
-        // TODO add your handling code here:
+        
+        // Using this process to invoke the constructor,
+        // JFileChooser points to user's default directory
+        JFileChooser j = new JFileChooser();
+
+        // Open the save dialog
+        int eleccion = j.showSaveDialog(null);
+        
+        String data = "";
+        if(eleccion == JFileChooser.APPROVE_OPTION){
+            try {
+                data = new String(Files.readAllBytes(j.getSelectedFile().toPath()));
+                System.out.println("LO LOGRÓ");
+                this.textCodigo.setText(data);
+            } catch (IOException ex) {
+
+                Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }//GEN-LAST:event_itemAbrirArchivoActionPerformed
 
     private void botonDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDeshacerActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_botonDeshacerActionPerformed
+
+    private void menuArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuArchivoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuArchivoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -350,6 +393,7 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemRepetir;
     private javax.swing.JMenuItem itemSeleccionar;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuAyuda;
     private javax.swing.JMenu menuCompilar;
@@ -366,6 +410,7 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JScrollPane panelSintactico;
     private javax.swing.JPopupMenu.Separator separadorGuardar;
     private javax.swing.JPopupMenu.Separator separadorPortapapeles;
+    private javax.swing.JTextArea textCodigo;
     private javax.swing.JTextPane textPaneCodIntermedio;
     private javax.swing.JTextPane textPaneErrores;
     private javax.swing.JTextPane textPaneLexico;
