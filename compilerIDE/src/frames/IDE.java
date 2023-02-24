@@ -253,6 +253,11 @@ public class IDE extends javax.swing.JFrame {
         menuArchivo.add(itemGuardarArchivo);
 
         itemGuardarComo.setText("Guardar como");
+        itemGuardarComo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemGuardarComoActionPerformed(evt);
+            }
+        });
         menuArchivo.add(itemGuardarComo);
 
         itemGuardarTodo.setText("Guardar todo");
@@ -392,6 +397,36 @@ public class IDE extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_itemGuardarArchivoActionPerformed
+
+    private void itemGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarComoActionPerformed
+        
+        JFileChooser j = new JFileChooser();
+        FileWriter file = null;
+
+        // Open the save dialog
+        int eleccion = j.showSaveDialog(null);
+        
+        String data = "";
+        if(eleccion == JFileChooser.APPROVE_OPTION){
+            try {
+                this.pathArchivo = j.getSelectedFile().toPath();
+                file = new FileWriter(this.pathArchivo.toFile(),true);
+                BufferedWriter writer = new BufferedWriter(file);
+                writer.write(textCodigo.getText());
+                writer.close();
+            } catch (IOException ex) {
+
+                Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            finally{
+                try {
+                    file.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_itemGuardarComoActionPerformed
 
     /**
      * @param args the command line arguments
