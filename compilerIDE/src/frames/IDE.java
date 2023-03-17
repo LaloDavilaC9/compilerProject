@@ -98,6 +98,7 @@ public class IDE extends javax.swing.JFrame {
 
         textCodigo.setColumns(20);
         textCodigo.setRows(5);
+        textCodigo.setText("asdasdasdas");
         jScrollPane1.setViewportView(textCodigo);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -410,7 +411,7 @@ public class IDE extends javax.swing.JFrame {
         if(eleccion == JFileChooser.APPROVE_OPTION){
             try {
                 this.pathArchivo = j.getSelectedFile().toPath();
-                file = new FileWriter(this.pathArchivo.toFile(),true);
+                file = new FileWriter(this.pathArchivo.toFile()+".txt",true);
                 BufferedWriter writer = new BufferedWriter(file);
                 writer.write(textCodigo.getText());
                 writer.close();
