@@ -21,6 +21,9 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.Element;
 
 /**
  *
@@ -33,26 +36,56 @@ public class IDE extends javax.swing.JFrame {
      */
     public IDE() {
         initComponents();
+        //  Code to implement line numbers inside the JTextArea
+        textCodigo.getDocument().addDocumentListener(new DocumentListener() {
+           public String getText() {
+              int caretPosition = textCodigo.getDocument().getLength();
+              Element root = textCodigo.getDocument().getDefaultRootElement();
+              String text = "1" + System.getProperty("line.separator");
+                 for(int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
+                    text += i + System.getProperty("line.separator");
+                 }
+              return text;
+           }
+           @Override
+           public void changedUpdate(DocumentEvent de) {
+              textNumeracion.setText(getText());
+           }
+           @Override
+           public void insertUpdate(DocumentEvent de) {
+              textNumeracion.setText(getText());
+           }
+           @Override
+           public void removeUpdate(DocumentEvent de) {
+              textNumeracion.setText(getText());
+           }
+        });
+        panelEditor.getViewport().add(textCodigo);
+        panelEditor.setRowHeaderView(textNumeracion);
+        panelEditorCompilador.add(panelEditor);
     }
+    
+    
 
     
     @SuppressWarnings("unchecked")
+    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         panelEditorCompilador = new javax.swing.JSplitPane();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        panelEditor = new javax.swing.JScrollPane();
         textCodigo = new javax.swing.JTextArea();
         panelCompilacion = new javax.swing.JTabbedPane();
         panelLexico = new javax.swing.JScrollPane();
-        textPaneLexico = new javax.swing.JTextPane();
+        tablaTokens = new javax.swing.JTable();
         panelSintactico = new javax.swing.JScrollPane();
         textPaneSintactico = new javax.swing.JTextPane();
         panelSemantico = new javax.swing.JScrollPane();
         textPaneSemantico = new javax.swing.JTextPane();
         panelCodIntermedio = new javax.swing.JScrollPane();
         textPaneCodIntermedio = new javax.swing.JTextPane();
+        textNumeracion = new javax.swing.JTextArea();
         panelRE = new javax.swing.JTabbedPane();
         panelResultados = new javax.swing.JScrollPane();
         textPaneResultados = new javax.swing.JTextPane();
@@ -88,43 +121,56 @@ public class IDE extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Compilador EDCT");
-        setMaximumSize(new java.awt.Dimension(800, 800));
         setMinimumSize(new java.awt.Dimension(800, 800));
-        setPreferredSize(new java.awt.Dimension(1500, 800));
 
         panelEditorCompilador.setDividerLocation(750);
 
-        jPanel2.setBackground(new java.awt.Color(255, 204, 204));
+        panelEditor.setBackground(new java.awt.Color(204, 255, 204));
 
         textCodigo.setColumns(20);
         textCodigo.setRows(5);
-        textCodigo.setText("asdasdasdas");
-        jScrollPane1.setViewportView(textCodigo);
+        panelEditor.setViewportView(textCodigo);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        panelEditorCompilador.setLeftComponent(jPanel2);
+        panelEditorCompilador.setRightComponent(panelEditor);
 
         panelCompilacion.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         panelCompilacion.setMaximumSize(new java.awt.Dimension(1500, 520));
         panelCompilacion.setMinimumSize(new java.awt.Dimension(200, 300));
 
-        panelLexico.setViewportView(textPaneLexico);
+        tablaTokens.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "clave", "lexema", "fila", "columna"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaTokens.setEnabled(false);
+        panelLexico.setViewportView(tablaTokens);
+        if (tablaTokens.getColumnModel().getColumnCount() > 0) {
+            tablaTokens.getColumnModel().getColumn(0).setResizable(false);
+            tablaTokens.getColumnModel().getColumn(1).setResizable(false);
+            tablaTokens.getColumnModel().getColumn(2).setResizable(false);
+            tablaTokens.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         panelCompilacion.addTab("Léxico", panelLexico);
 
@@ -141,6 +187,13 @@ public class IDE extends javax.swing.JFrame {
         panelCompilacion.addTab("Código Intermedio", panelCodIntermedio);
 
         panelEditorCompilador.setRightComponent(panelCompilacion);
+
+        textNumeracion.setEditable(false);
+        textNumeracion.setBackground(new java.awt.Color(204, 204, 204));
+        textNumeracion.setColumns(3);
+        textNumeracion.setRows(5);
+        textNumeracion.setTabSize(1);
+        panelEditorCompilador.setLeftComponent(textNumeracion);
 
         panelResultados.setViewportView(textPaneResultados);
 
@@ -469,8 +522,6 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JMenuItem itemPegar;
     private javax.swing.JMenuItem itemRepetir;
     private javax.swing.JMenuItem itemSeleccionar;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenu menuAyuda;
     private javax.swing.JMenu menuCompilar;
@@ -478,6 +529,7 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JMenu menuFormato;
     private javax.swing.JScrollPane panelCodIntermedio;
     private javax.swing.JTabbedPane panelCompilacion;
+    private javax.swing.JScrollPane panelEditor;
     private javax.swing.JSplitPane panelEditorCompilador;
     private javax.swing.JScrollPane panelErrores;
     private javax.swing.JScrollPane panelLexico;
@@ -487,10 +539,11 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JScrollPane panelSintactico;
     private javax.swing.JPopupMenu.Separator separadorGuardar;
     private javax.swing.JPopupMenu.Separator separadorPortapapeles;
+    private javax.swing.JTable tablaTokens;
     private javax.swing.JTextArea textCodigo;
+    private javax.swing.JTextArea textNumeracion;
     private javax.swing.JTextPane textPaneCodIntermedio;
     private javax.swing.JTextPane textPaneErrores;
-    private javax.swing.JTextPane textPaneLexico;
     private javax.swing.JTextPane textPaneResultados;
     private javax.swing.JTextPane textPaneSemantico;
     private javax.swing.JTextPane textPaneSintactico;
