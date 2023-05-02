@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +25,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Element;
+import jflexpackage.Lexer;
+import jflexpackage.Tokens;
 
 /**
  *
@@ -360,6 +363,16 @@ public class IDE extends javax.swing.JFrame {
         barraPrincipal.add(menuFormato);
 
         menuCompilar.setText("Compilar");
+        menuCompilar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuCompilarMouseClicked(evt);
+            }
+        });
+        menuCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCompilarActionPerformed(evt);
+            }
+        });
         barraPrincipal.add(menuCompilar);
 
         menuAyuda.setText("Ayuda");
@@ -469,7 +482,6 @@ public class IDE extends javax.swing.JFrame {
                 writer.write(textCodigo.getText());
                 writer.close();
             } catch (IOException ex) {
-
                 Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
             }
             finally{
@@ -481,6 +493,46 @@ public class IDE extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_itemGuardarComoActionPerformed
+
+    private void menuCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCompilarActionPerformed
+        
+    }//GEN-LAST:event_menuCompilarActionPerformed
+
+    private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
+        // TODO add your handling code here:
+        //System.out.println("EN estos momentos el path es "+this.pathArchivo.toString());
+        try{
+            //Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
+            Reader lector = new BufferedReader(new FileReader("D:/Escritorio/Arhcivo prueba cynthia.txt"));
+            Lexer lexer = new Lexer(lector);
+            String resultado = "";
+            while (true) {
+                Tokens tokens = lexer.yylex();
+                if (tokens == null) {
+                    resultado += "FIN";
+                    //txtResultado.setText(resultado);
+                    System.out.println(resultado);
+                    return;
+                }
+                switch (tokens) {
+                    case ERROR:
+                        resultado += "Simbolo no definido\n";
+                        break;
+                    case Identificador: case Numero: case Reservadas:
+                        resultado += lexer.lexeme + ": Es un " + tokens + "\n";
+                        break;
+                    default:
+                        resultado += "Token: " + tokens + "\n";
+                        break;
+                }
+            }
+        }
+        catch(Exception x){
+            System.out.println("ERROOOOOOOR jiji");
+            System.out.println(x.getMessage());
+        }
+    
+    }//GEN-LAST:event_menuCompilarMouseClicked
 
     /**
      * @param args the command line arguments

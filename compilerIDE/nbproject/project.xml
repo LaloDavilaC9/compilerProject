@@ -4,7 +4,6 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>compilerIDE</name>
-            <explicit-platform explicit-source-supported="true"/>
             <source-roots>
                 <root id="src.dir"/>
             </source-roots>
@@ -12,5 +11,22 @@
                 <root id="test.src.dir"/>
             </test-roots>
         </data>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>Compiladores</word>
+            <word>espacio</word>
+            <word>Identificador</word>
+            <word>Igual</word>
+            <word>jflexpackage</word>
+            <word>Lalo</word>
+            <word>Multiplicacion</word>
+            <word>Numero</word>
+            <word>Reservadas</word>
+            <word>Resta</word>
+            <word>Semestre</word>
+            <word>Suma</word>
+            <word>Tareas</word>
+            <word>yytext</word>
+            <word>zA</word>
+        </spellchecker-wordlist>
     </configuration>
 </project>
