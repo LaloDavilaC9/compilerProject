@@ -12,19 +12,36 @@
             </test-roots>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>bool</word>
+            <word>columna</word>
             <word>Compiladores</word>
+            <word>diferenteque</word>
+            <word>dllave</word>
+            <word>dparentesis</word>
             <word>espacio</word>
+            <word>fi</word>
             <word>Identificador</word>
             <word>Igual</word>
+            <word>igualque</word>
+            <word>illave</word>
+            <word>iparentesis</word>
             <word>jflexpackage</word>
             <word>Lalo</word>
+            <word>Letra</word>
+            <word>linea</word>
+            <word>mayorigualque</word>
+            <word>menorigualque</word>
+            <word>menorque</word>
             <word>Multiplicacion</word>
             <word>Numero</word>
+            <word>Potencia</word>
             <word>Reservadas</word>
             <word>Resta</word>
             <word>Semestre</word>
             <word>Suma</word>
             <word>Tareas</word>
+            <word>yychar</word>
+            <word>yycolumn</word>
             <word>yytext</word>
             <word>zA</word>
         </spellchecker-wordlist>

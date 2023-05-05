@@ -1,9 +1,11 @@
+package jflexpackage;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frames;
+
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.io.BufferedReader;
@@ -25,9 +27,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Element;
-import jflexpackage.Lexer;
-import jflexpackage.Tokens;
-
 /**
  *
  * @author chido
