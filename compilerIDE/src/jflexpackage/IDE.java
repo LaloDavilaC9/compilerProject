@@ -502,7 +502,7 @@ public class IDE extends javax.swing.JFrame {
         //System.out.println("EN estos momentos el path es "+this.pathArchivo.toString());
         try{
             //Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
-            Reader lector = new BufferedReader(new FileReader("D:/Escritorio/Arhcivo prueba cynthia.txt"));
+            Reader lector = new BufferedReader(new FileReader("C:/Users/Cynthia Maritza/Downloads/ejemplo.txt"));
             Lexer lexer = new Lexer(lector);
             String resultado = "";
             while (true) {
@@ -513,17 +513,18 @@ public class IDE extends javax.swing.JFrame {
                     System.out.println(resultado);
                     return;
                 }
-                switch (tokens) {
+                System.out.println(lexer.lexema +" " + tokens + " "+ lexer.linea + " " + lexer.columna);
+                /*switch (tokens) {
                     case ERROR:
                         resultado += "Simbolo no definido\n";
                         break;
                     case Identificador: case Numero: case Reservadas:
-                        resultado += lexer.lexeme + ": Es un " + tokens + "\n";
+                        resultado += lexer.lexema + ": Es un " + tokens + "\n";
                         break;
                     default:
                         resultado += "Token: " + tokens + "\n";
                         break;
-                }
+                }*/
             }
         }
         catch(Exception x){
