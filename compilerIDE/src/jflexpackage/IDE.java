@@ -22,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
@@ -439,6 +440,11 @@ public class IDE extends javax.swing.JFrame {
 
     private void itemNuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevoArchivoActionPerformed
         this.textCodigo.setText("");
+        this.pathArchivo = null;
+        
+        DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
+        modelo.setRowCount(0);
+        tablaTokens.setModel(modelo);
     }//GEN-LAST:event_itemNuevoArchivoActionPerformed
 
     private void itemGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarArchivoActionPerformed
@@ -497,30 +503,37 @@ public class IDE extends javax.swing.JFrame {
 
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
 
-        //Modelo para tabla
-        DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
+        if(this.pathArchivo != null){
+            //Modelo para tabla
+            DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
+            System.out.println("RUTA: "+this.pathArchivo.toString());
+            try{
+                //Reader lector = new BufferedReader(new FileReader("D:/Escritorio/Arhcivo prueba cynthia.txt"));
+                Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
+                Lexer lexer = new Lexer(lector);
+                while (true) {
+                    Tokens tokens = lexer.yylex();
+                    if (tokens == null) {
+                        return;
+                    }
 
-        try{
-            Reader lector = new BufferedReader(new FileReader("C:/Users/Cynthia Maritza/Downloads/ejemplo.txt"));
-            Lexer lexer = new Lexer(lector);
-            while (true) {
-                Tokens tokens = lexer.yylex();
-                if (tokens == null) {
-                    return;
+                    //Agregar filas a la tabla
+                    String fila[]= {lexer.lexema, ""+tokens, ""+lexer.linea, ""+lexer.columna};
+                    modelo.addRow(fila);
+
                 }
-                
-                //Agregar filas a la tabla
-                String fila[]= {lexer.lexema, ""+tokens, ""+lexer.linea, ""+lexer.columna};
-                modelo.addRow(fila);
-                
             }
+            catch(Exception x){
+                System.out.println(x.getMessage());
+            }
+
+            //Actualizar tabla con los datos
+            tablaTokens.setModel(modelo);
         }
-        catch(Exception x){
-            System.out.println(x.getMessage());
+        else{
+            JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
+
         }
-        
-        //Actualizar tabla con los datos
-        tablaTokens.setModel(modelo);
     
     }//GEN-LAST:event_menuCompilarMouseClicked
 
