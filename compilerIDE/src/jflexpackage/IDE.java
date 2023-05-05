@@ -26,6 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Element;
 /**
  *
@@ -141,10 +142,7 @@ public class IDE extends javax.swing.JFrame {
 
         tablaTokens.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "clave", "lexema", "fila", "columna"
@@ -498,39 +496,31 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_menuCompilarActionPerformed
 
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
-        // TODO add your handling code here:
-        //System.out.println("EN estos momentos el path es "+this.pathArchivo.toString());
+
+        //Modelo para tabla
+        DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
+
         try{
-            //Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
             Reader lector = new BufferedReader(new FileReader("C:/Users/Cynthia Maritza/Downloads/ejemplo.txt"));
             Lexer lexer = new Lexer(lector);
-            String resultado = "";
             while (true) {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
-                    resultado += "FIN";
-                    //txtResultado.setText(resultado);
-                    System.out.println(resultado);
                     return;
                 }
-                System.out.println(lexer.lexema +" " + tokens + " "+ lexer.linea + " " + lexer.columna);
-                /*switch (tokens) {
-                    case ERROR:
-                        resultado += "Simbolo no definido\n";
-                        break;
-                    case Identificador: case Numero: case Reservadas:
-                        resultado += lexer.lexema + ": Es un " + tokens + "\n";
-                        break;
-                    default:
-                        resultado += "Token: " + tokens + "\n";
-                        break;
-                }*/
+                
+                //Agregar filas a la tabla
+                String fila[]= {lexer.lexema, ""+tokens, ""+lexer.linea, ""+lexer.columna};
+                modelo.addRow(fila);
+                
             }
         }
         catch(Exception x){
-            System.out.println("ERROOOOOOOR jiji");
             System.out.println(x.getMessage());
         }
+        
+        //Actualizar tabla con los datos
+        tablaTokens.setModel(modelo);
     
     }//GEN-LAST:event_menuCompilarMouseClicked
 
