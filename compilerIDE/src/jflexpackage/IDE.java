@@ -449,7 +449,6 @@ public class IDE extends javax.swing.JFrame {
 
     private void itemGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarArchivoActionPerformed
         FileWriter file = null;
-
         try {
             file = new FileWriter(this.pathArchivo.toFile(),false);
             BufferedWriter writer = new BufferedWriter(file);
