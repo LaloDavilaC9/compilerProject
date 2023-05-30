@@ -5,8 +5,7 @@ options{
     LOOKAHEAD = 1;
 }
 PARSER_BEGIN(gramatica);
-package sintactico;
-public clas gramatica{}
+public class gramatica{}
 PARSER_END(gramatica)
 
 /*Analizador léxico*/
@@ -16,8 +15,8 @@ SKIP : {
 }
 
 TOKEN : {
-  <DIGIT: ["0"-"9"]>
-    < PROGRAM : "program" >
+    <DIGIT: ["0"-"9"]> 
+    | < PROGRAM : "program" >
     | < LBRACE : "{" >
     | < RBRACE : "}" >
     | < LBRACKET : "[" >
@@ -52,33 +51,34 @@ TOKEN : {
     | < INT : "int" >
     | < FLOAT : "float" >
     | < BOOL : "bool" >
+    | < TRUE : "true" >
+    | < FALSE : "false" >
     | < ID : (["a"-"z", "A"-"Z"])+ >
     | < INTEGER : (["0"-"9"])+ >
     | < REAL : (["0"-"9"])+ "." (["0"-"9"])* >
-    | < TRUE : "true" >
-    | < FALSE : "false" >
+    
 }
 
 void programa():{}{<PROGRAM> <LBRACE> lista_decl() lista_sent() <RBRACE>}
-void epsilon():{}{}
-void lista_decl():{}{lista_decl() decl() | decl() | epsilon()}
+void lista_decl():{}{(decl())*}
 void decl():{}{tipo() lista_id() <SEMICOLON>}
 void tipo():{}{<INT> | <FLOAT> | <BOOL>}
-void lista_id():{}{ lista_id() <COMMA> <ID> | <ID> }
-void lista_sent():{}{ lista_sent() sent() | sent() | epsilon()}
+void lista_id():{}{ <ID> ( <COMMA> <ID> )* }
+void lista_sent():{}{ sent() ( sent() )* }
 void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | <BREAK>}
 void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> bloque() <LBRACKET> <ELSE> bloque() <RBRACKET> <FI> }
+void sent_while():{} {<WHILE> <LPAREN> exp_bool() <RPAREN> bloque()}
 void sent_do():{}{ <DO> bloque() <UNTIL> <LPAREN> exp_bool() <RPAREN> <SEMICOLON>}
 void sent_read():{}{ <READ> <ID> <SEMICOLON>}
-void sent_write():{}{<WRITE> exp_bool() <SEMICOLON>}
+void sent_write():{}{<WRITE> <ID> <SEMICOLON>}
 void bloque():{}{ <LBRACE> lista_sent() <RBRACE>}
 void sent_assign():{}{<ID> <ASSIGN> exp_bool() <SEMICOLON>}
-void exp_bool():{}{exp_bool() <OR> comb() | comb() }
-void comb():{}{ comb() <AND> igualdad() | igualdad()}
-void igualdad():{}{ igualdad() <EQ> rel() | igualdad() <NEQ> rel() | rel()}
+void exp_bool():{}{ comb() ( <OR> comb() )* }
+void comb():{}{ igualdad() ( <AND> igualdad() )* }
+void igualdad():{}{ rel() ( ( <EQ> | <NEQ> ) rel() )* }
 void rel():{}{expr() op_rel() expr()}
 void op_rel():{}{<LT> | <LTE> | <GT> | <GTE>}
-void expr():{}{expr() <MINUS> term() | expr() <PLUS> term() | term()}
-void term():{}{term() <ASTERISK> unario() | term() <SLASH> unario() | unario()}
+void expr():{}{ term() ( ( <PLUS> | <MINUS> ) term() )* }
+void term():{}{ unario() ( ( <ASTERISK> | <SLASH> ) unario() )* }
 void unario():{}{<NOT> unario() | <MINUS> unario() | factor()}
-void factor():{}{<LPAREN> exp_bool <RPAREN> | <ID> | <INTEGER> | <REAL> | <TRUE> | <FALSE>}
+void factor():{}{<LPAREN> exp_bool() <RPAREN> | <ID> | <INTEGER> | <REAL> | <TRUE> | <FALSE>}
