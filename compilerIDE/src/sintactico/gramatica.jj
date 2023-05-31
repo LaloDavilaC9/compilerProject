@@ -5,6 +5,7 @@ options{
     LOOKAHEAD = 1;
 }
 PARSER_BEGIN(gramatica);
+package sintactico;
 public class gramatica{}
 PARSER_END(gramatica)
 
@@ -15,8 +16,8 @@ SKIP : {
 }
 
 TOKEN : {
-    <DIGIT: ["0"-"9"]> 
-    | < PROGRAM : "program" >
+    <PROGRAM: "program" >
+    |<DIGIT: ["0"-"9"]> 
     | < LBRACE : "{" >
     | < RBRACE : "}" >
     | < LBRACKET : "[" >
