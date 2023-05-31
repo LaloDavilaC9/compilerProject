@@ -1,23 +1,37 @@
 options{
-    IGNORE_CASE = true;
-    STATIC = false;
-    BUILD_PARSER = true;
-    LOOKAHEAD = 1;
+   LOOKAHEAD = 1;
+  CHOICE_AMBIGUITY_CHECK = 2;
+  OTHER_AMBIGUITY_CHECK = 1;
+  STATIC = true;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  ERROR_REPORTING = true;
+  JAVA_UNICODE_ESCAPE = false;
+  UNICODE_INPUT = false;
+  IGNORE_CASE = false;
+  USER_TOKEN_MANAGER = false;
+  USER_CHAR_STREAM = false;
+  BUILD_PARSER = true;
+  BUILD_TOKEN_MANAGER = true;
+  SANITY_CHECK = true;
+  FORCE_LA_CHECK = false;
 }
-PARSER_BEGIN(gramatica);
+PARSER_BEGIN(gramatica)
 package sintactico;
+
 public class gramatica{}
+
 PARSER_END(gramatica)
 
 /*Analizador léxico*/
 //Saltar espacios
 SKIP : {
-    " " | "\t" | "\r" | "\n"
+    " " | "\t" | "\r" | "\n" 
 }
 
 TOKEN : {
     <PROGRAM: "program" >
-    |<DIGIT: ["0"-"9"]> 
     | < LBRACE : "{" >
     | < RBRACE : "}" >
     | < LBRACKET : "[" >
@@ -54,20 +68,39 @@ TOKEN : {
     | < BOOL : "bool" >
     | < TRUE : "true" >
     | < FALSE : "false" >
+    | < THEN : "then" >
     | < ID : (["a"-"z", "A"-"Z"])+ >
     | < INTEGER : (["0"-"9"])+ >
-    | < REAL : (["0"-"9"])+ "." (["0"-"9"])* >
+    | < REAL : (["0"-"9"])+ "." (["0"-"9"])* > 
+    
     
 }
 
-void programa():{}{<PROGRAM> <LBRACE> lista_decl() lista_sent() <RBRACE>}
+// when /* is seen in the DEFAULT state, skip it and switch to the IN_COMMENT state
+SKIP : {
+  "/*": IN_COMMENT
+}
+
+// when any other character is seen in the IN_COMMENT state, skip it.
+< IN_COMMENT > SKIP : {
+  < ~[] >
+}
+
+// when */ is seen in the IN_COMMENT state, skip it and switch back to the DEFAULT state
+< IN_COMMENT > SKIP : {
+  "*/": DEFAULT
+}
+
+
+
+void program():{}{<PROGRAM> <LBRACE> lista_decl() lista_sent() <RBRACE> <EOF>}
 void lista_decl():{}{(decl())*}
 void decl():{}{tipo() lista_id() <SEMICOLON>}
 void tipo():{}{<INT> | <FLOAT> | <BOOL>}
 void lista_id():{}{ <ID> ( <COMMA> <ID> )* }
 void lista_sent():{}{ sent() ( sent() )* }
 void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | <BREAK>}
-void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> bloque() <LBRACKET> <ELSE> bloque() <RBRACKET> <FI> }
+void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() <ELSE> bloque() <FI> }
 void sent_while():{} {<WHILE> <LPAREN> exp_bool() <RPAREN> bloque()}
 void sent_do():{}{ <DO> bloque() <UNTIL> <LPAREN> exp_bool() <RPAREN> <SEMICOLON>}
 void sent_read():{}{ <READ> <ID> <SEMICOLON>}
@@ -77,7 +110,7 @@ void sent_assign():{}{<ID> <ASSIGN> exp_bool() <SEMICOLON>}
 void exp_bool():{}{ comb() ( <OR> comb() )* }
 void comb():{}{ igualdad() ( <AND> igualdad() )* }
 void igualdad():{}{ rel() ( ( <EQ> | <NEQ> ) rel() )* }
-void rel():{}{expr() op_rel() expr()}
+void rel():{}{ expr() [op_rel() expr()]}
 void op_rel():{}{<LT> | <LTE> | <GT> | <GTE>}
 void expr():{}{ term() ( ( <PLUS> | <MINUS> ) term() )* }
 void term():{}{ unario() ( ( <ASTERISK> | <SLASH> ) unario() )* }

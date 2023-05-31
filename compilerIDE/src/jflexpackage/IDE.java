@@ -505,14 +505,14 @@ public class IDE extends javax.swing.JFrame {
 
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
 
-        if(this.pathArchivo != null){
-            itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
+        //if(this.pathArchivo != null){
+            //itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
             analizador_lexico();
             analizador_sintactico();
-        }
+        /*}
         else{
             JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
-        }
+        }*/
         
     }//GEN-LAST:event_menuCompilarMouseClicked
 
@@ -543,7 +543,7 @@ public class IDE extends javax.swing.JFrame {
         //if(this.pathArchivo != null){
             //Modelo para tabla
             DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
-            System.out.println("RUTA: "+this.pathArchivo.toString());
+            //System.out.println("RUTA: "+this.pathArchivo.toString());
             try{
                 //Reader lector = new BufferedReader(new FileReader("D:/Escritorio/Arhcivo prueba cynthia.txt"));
                 Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
@@ -575,12 +575,18 @@ public class IDE extends javax.swing.JFrame {
     
     public void analizador_sintactico(){
         
-        String codigoAnalizar = textCodigo.toString();
+        //String codigoAnalizar = textCodigo.getText();
+        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
+       
+        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"float a, b;\n" +"bool c;\n" +"c = false;\n" +"x=5; \n" +"y=4;\n" +"a=0.0;\n" +"b=3.0;\n" +"do {\n" +"if(x<y and y>=0) then{\n" +"c=true;\n" +"} else {\n" +"x=x-2;\n" +"a=a*x+b;\n" +"y=y-1;\n" +"} \n" +"fi\n" +"while(a==3 or x==y){\n" +"write a;\n" +"a=a+1;\n" +"x=a-y;\n" +"}\n" +"} until(c == true);\n" +"}";
+        String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
+     
+        System.out.println(codigoAnalizar);
         ByteArrayInputStream cbytes = new ByteArrayInputStream(codigoAnalizar.getBytes());
         gramatica gram = new gramatica(cbytes);
         
         try{
-            gram.programa();
+            gram.program();
             System.out.println("Gramática correcta");
         }
         catch(ParseException | TokenMgrError e){
