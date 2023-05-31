@@ -1,5 +1,7 @@
 package jflexpackage;
 
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -8,8 +10,10 @@ package jflexpackage;
 
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -29,6 +33,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Element;
+import sintactico.*;
 /**
  *
  * @author chido
@@ -442,9 +447,7 @@ public class IDE extends javax.swing.JFrame {
         this.textCodigo.setText("");
         this.pathArchivo = null;
         
-        DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
-        modelo.setRowCount(0);
-        tablaTokens.setModel(modelo);
+        limpiar_tablaLexico();
     }//GEN-LAST:event_itemNuevoArchivoActionPerformed
 
     private void itemGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarArchivoActionPerformed
@@ -503,6 +506,41 @@ public class IDE extends javax.swing.JFrame {
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
 
         if(this.pathArchivo != null){
+            itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
+            analizador_lexico();
+            analizador_sintactico();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
+        }
+        
+    }//GEN-LAST:event_menuCompilarMouseClicked
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        try {
+            UIManager.setLookAndFeel(new FlatIntelliJLaf());
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new IDE().setVisible(true);
+            }
+        });
+    }
+    
+    //Funciones para cada apartado del compilador
+    public void analizador_lexico(){
+        
+        //Limpiar tabla cada que compilamos
+        limpiar_tablaLexico();
+        
+        //if(this.pathArchivo != null){
             //Modelo para tabla
             DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
             System.out.println("RUTA: "+this.pathArchivo.toString());
@@ -528,31 +566,37 @@ public class IDE extends javax.swing.JFrame {
 
             //Actualizar tabla con los datos
             tablaTokens.setModel(modelo);
-        }
-        else{
-            JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
-
-        }
-    
-    }//GEN-LAST:event_menuCompilarMouseClicked
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        try {
-            UIManager.setLookAndFeel(new FlatIntelliJLaf());
-        } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new IDE().setVisible(true);
-            }
-        });
+        //}
+        //else{
+         //   JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
+        //}
+        
     }
+    
+    public void analizador_sintactico(){
+        
+        String codigoAnalizar = textCodigo.toString();
+        ByteArrayInputStream cbytes = new ByteArrayInputStream(codigoAnalizar.getBytes());
+        gramatica gram = new gramatica(cbytes);
+        
+        try{
+            gram.programa();
+            System.out.println("Gramática correcta");
+        }
+        catch(ParseException | TokenMgrError e){
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
+    //Limpiar tabla de analizador léxico
+    public void limpiar_tablaLexico(){
+        DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
+        modelo.setRowCount(0);
+        tablaTokens.setModel(modelo);
+    }
+    
+    
 
     private Path pathArchivo;
     // Variables declaration - do not modify//GEN-BEGIN:variables

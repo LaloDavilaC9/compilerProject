@@ -3,6 +3,7 @@
 /**
  * Describes the input token stream.
  */
+package sintactico;
 
 public class Token implements java.io.Serializable {
 
