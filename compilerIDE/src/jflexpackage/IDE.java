@@ -505,14 +505,14 @@ public class IDE extends javax.swing.JFrame {
 
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
 
-        //if(this.pathArchivo != null){
-            //itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
+        if(this.pathArchivo != null){
+            itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
             analizador_lexico();
             analizador_sintactico();
-        /*}
+        }
         else{
             JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
-        }*/
+        }
         
     }//GEN-LAST:event_menuCompilarMouseClicked
 
@@ -540,7 +540,7 @@ public class IDE extends javax.swing.JFrame {
         //Limpiar tabla cada que compilamos
         limpiar_tablaLexico();
         
-        //if(this.pathArchivo != null){
+        if(this.pathArchivo != null){
             //Modelo para tabla
             DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
             //System.out.println("RUTA: "+this.pathArchivo.toString());
@@ -566,10 +566,10 @@ public class IDE extends javax.swing.JFrame {
 
             //Actualizar tabla con los datos
             tablaTokens.setModel(modelo);
-        //}
-        //else{
-         //   JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
-        //}
+        }
+        else{
+           JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
+        }
         
     }
     
@@ -579,18 +579,29 @@ public class IDE extends javax.swing.JFrame {
         //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
        
         //String codigoAnalizar = "program {\n" +"int x, y;\n" +"float a, b;\n" +"bool c;\n" +"c = false;\n" +"x=5; \n" +"y=4;\n" +"a=0.0;\n" +"b=3.0;\n" +"do {\n" +"if(x<y and y>=0) then{\n" +"c=true;\n" +"} else {\n" +"x=x-2;\n" +"a=a*x+b;\n" +"y=y-1;\n" +"} \n" +"fi\n" +"while(a==3 or x==y){\n" +"write a;\n" +"a=a+1;\n" +"x=a-y;\n" +"}\n" +"} until(c == true);\n" +"}";
-        String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
-     
-        System.out.println(codigoAnalizar);
-        ByteArrayInputStream cbytes = new ByteArrayInputStream(codigoAnalizar.getBytes());
-        gramatica gram = new gramatica(cbytes);
+        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
+   
+        Gramatica gram;
         
         try{
-            gram.program();
+            System.out.println("Entró a analizador");
+            gram = new Gramatica (new BufferedReader(new FileReader(this.pathArchivo.toString())));
+          
+            /*String codigoAnalizar = textCodigo.getText();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(codigoAnalizar.getBytes());
+            Gramatica analizador = new Gramatica(inputStream);*/
+            SimpleNode root = gram.program();
+            
+            
+            printAST((SimpleNode) root, "");
+            
+            System.out.println(gram);
             System.out.println("Gramática correcta");
         }
         catch(ParseException | TokenMgrError e){
             System.out.println(e.getMessage());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ex.getMessage());
         }
         
     }
@@ -600,6 +611,15 @@ public class IDE extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
         modelo.setRowCount(0);
         tablaTokens.setModel(modelo);
+    }
+    
+    // Método para imprimir el árbol de análisis en forma de texto
+    public static void printAST(SimpleNode node, String indent) {
+      System.out.println(indent + node.toString());
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+        SimpleNode child = (SimpleNode) node.jjtGetChild(i);
+        printAST(child, indent + "  ");
+      }
     }
     
     
