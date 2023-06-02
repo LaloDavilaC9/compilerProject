@@ -576,7 +576,7 @@ public class IDE extends javax.swing.JFrame {
     public void analizador_sintactico(){
         
         //String codigoAnalizar = textCodigo.getText();
-        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
+        String codigoAnalizar = "program {}";
        
         //String codigoAnalizar = "program {\n" +"int x, y;\n" +"float a, b;\n" +"bool c;\n" +"c = false;\n" +"x=5; \n" +"y=4;\n" +"a=0.0;\n" +"b=3.0;\n" +"do {\n" +"if(x<y and y>=0) then{\n" +"c=true;\n" +"} else {\n" +"x=x-2;\n" +"a=a*x+b;\n" +"y=y-1;\n" +"} \n" +"fi\n" +"while(a==3 or x==y){\n" +"write a;\n" +"a=a+1;\n" +"x=a-y;\n" +"}\n" +"} until(c == true);\n" +"}";
         //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
@@ -585,23 +585,19 @@ public class IDE extends javax.swing.JFrame {
         
         try{
             System.out.println("Entró a analizador");
-            gram = new Gramatica (new BufferedReader(new FileReader(this.pathArchivo.toString())));
-          
-            /*String codigoAnalizar = textCodigo.getText();
+            
             ByteArrayInputStream inputStream = new ByteArrayInputStream(codigoAnalizar.getBytes());
-            Gramatica analizador = new Gramatica(inputStream);*/
+            gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
-            
-            
-            printAST((SimpleNode) root, "");
+
+            // Imprimir el árbol de análisis
+            printAST(root, "");
             
             System.out.println(gram);
             System.out.println("Gramática correcta");
         }
         catch(ParseException | TokenMgrError e){
             System.out.println(e.getMessage());
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ex.getMessage());
         }
         
     }
