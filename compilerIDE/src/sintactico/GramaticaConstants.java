@@ -149,6 +149,7 @@ public interface GramaticaConstants {
     "\"/*\"",
     "<token of kind 47>",
     "\"*/\"",
+    "<token of kind 49>",
   };
 
 }

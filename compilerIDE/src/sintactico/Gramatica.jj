@@ -101,6 +101,11 @@ SKIP : {
   "*/": DEFAULT
 }
 
+SKIP :
+{
+    <"//" (~["\n"])* "\n">
+}
+
 SimpleNode program():{/*@bgen(jjtree) program */
   SimpleNode jjtn000 = new SimpleNode(JJTPROGRAM);
   boolean jjtc000 = true;
@@ -108,7 +113,7 @@ SimpleNode program():{/*@bgen(jjtree) program */
 /*@egen*/}{/*@bgen(jjtree) program */
 try {
 /*@egen*/
-<PROGRAM> <LBRACE> lista_decl() lista_sent() <RBRACE> <EOF>/*@bgen(jjtree)*/
+<PROGRAM> <LBRACE> (lista_decl() lista_sent())* <RBRACE> <EOF>/*@bgen(jjtree)*/
 {
   jjtree.closeNodeScope(jjtn000, true);
   jjtc000 = false;
@@ -276,7 +281,7 @@ void sent_if():{/*@bgen(jjtree) sent_if */
   jjtree.openNodeScope(jjtn000);
 /*@egen*/}{/*@bgen(jjtree) sent_if */
                    try {
-/*@egen*/ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() <ELSE> bloque() <FI>/*@bgen(jjtree)*/
+/*@egen*/ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() (<ELSE> bloque())* <FI>/*@bgen(jjtree)*/
                    } catch (Throwable jjte000) {
                      if (jjtc000) {
                        jjtree.clearNodeScope(jjtn000);

@@ -586,7 +586,7 @@ public class IDE extends javax.swing.JFrame {
         try{
             System.out.println("Entró a analizador");
             
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(codigoAnalizar.getBytes());
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(textCodigo.getText().getBytes());
             gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
 
@@ -594,9 +594,12 @@ public class IDE extends javax.swing.JFrame {
             printAST(root, "");
             
             System.out.println(gram);
-            System.out.println("Gramática correcta");
+            //System.out.println("Gramática correcta");
+            JOptionPane.showMessageDialog(null, "GRAMÁTICA CORRECTA");
+
         }
         catch(ParseException | TokenMgrError e){
+            JOptionPane.showMessageDialog(null, "GRAMÁTICA INCORRECTA");
             System.out.println(e.getMessage());
         }
         

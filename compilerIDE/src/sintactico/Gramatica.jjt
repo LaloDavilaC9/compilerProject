@@ -97,8 +97,13 @@ SKIP : {
   "*/": DEFAULT
 }
 
+SKIP :
+{
+    <"//" (~["\n"])* "\n">
+}
+
 SimpleNode program():{}{
-<PROGRAM> <LBRACE> lista_decl() lista_sent() <RBRACE> <EOF>
+<PROGRAM> <LBRACE> (lista_decl() lista_sent())* <RBRACE> <EOF>
 {return jjtThis;}
 }
 void lista_decl():{}{(decl())*}
@@ -107,7 +112,7 @@ void tipo():{}{<INT> | <FLOAT> | <BOOL>}
 void lista_id():{}{ <ID> ( <COMMA> <ID> )* }
 void lista_sent():{}{ sent() ( sent() )* }
 void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | <BREAK>}
-void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() <ELSE> bloque() <FI> }
+void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() (<ELSE> bloque())* <FI> }
 void sent_while():{} {<WHILE> <LPAREN> exp_bool() <RPAREN> bloque()}
 void sent_do():{}{ <DO> bloque() <UNTIL> <LPAREN> exp_bool() <RPAREN> <SEMICOLON>}
 void sent_read():{}{ <READ> <ID> <SEMICOLON>}
