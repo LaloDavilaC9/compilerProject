@@ -574,41 +574,36 @@ public class IDE extends javax.swing.JFrame {
     }
     
     public void analizador_sintactico(){
-        
-        //String codigoAnalizar = textCodigo.getText();
-        String codigoAnalizar = "program {}";
-       
-        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"float a, b;\n" +"bool c;\n" +"c = false;\n" +"x=5; \n" +"y=4;\n" +"a=0.0;\n" +"b=3.0;\n" +"do {\n" +"if(x<y and y>=0) then{\n" +"c=true;\n" +"} else {\n" +"x=x-2;\n" +"a=a*x+b;\n" +"y=y-1;\n" +"} \n" +"fi\n" +"while(a==3 or x==y){\n" +"write a;\n" +"a=a+1;\n" +"x=a-y;\n" +"}\n" +"} until(c == true);\n" +"}";
-        //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
-   
+        limpiar_arbolSintactico();
+
         Gramatica gram;
         String arbol="";
         try{
-            System.out.println("Entró a analizador");
             
             ByteArrayInputStream inputStream = new ByteArrayInputStream(textCodigo.getText().getBytes());
             gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
-            //root.dump("");
             // Imprimir el árbol de análisis
             arbol = printAST(root, "");
             
-            //System.out.println(arbol);
             textPaneSintactico.setText(arbol);
             
-            //System.out.println("Gramática correcta");
             JOptionPane.showMessageDialog(null, "GRAMÁTICA CORRECTA");
 
         }
         catch(ParseException | TokenMgrError e){
             textPaneErrores.setText(e.getMessage());
-           // JOptionPane.showMessageDialog(null, textErore);
-            System.out.println(e.getMessage());
         }
         
     }
     
-    //Limpiar tabla de analizador léxico
+    
+    public void limpiar_arbolSintactico(){
+        textPaneSintactico.setText("");
+        textPaneErrores.setText("");
+    }
+    
+    //Limpiar tabla de analizador léxico  
     public void limpiar_tablaLexico(){
         DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
         modelo.setRowCount(0);
