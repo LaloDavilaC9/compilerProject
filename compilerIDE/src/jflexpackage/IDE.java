@@ -582,24 +582,27 @@ public class IDE extends javax.swing.JFrame {
         //String codigoAnalizar = "program {\n" +"int x, y;\n" +"write x;\n" +"write y;\n" +"}";
    
         Gramatica gram;
-        
+        String arbol="";
         try{
             System.out.println("Entró a analizador");
             
             ByteArrayInputStream inputStream = new ByteArrayInputStream(textCodigo.getText().getBytes());
             gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
-
+            //root.dump("");
             // Imprimir el árbol de análisis
-            printAST(root, "");
+            arbol = printAST(root, "");
             
-            System.out.println(gram);
+            //System.out.println(arbol);
+            textPaneSintactico.setText(arbol);
+            
             //System.out.println("Gramática correcta");
             JOptionPane.showMessageDialog(null, "GRAMÁTICA CORRECTA");
 
         }
         catch(ParseException | TokenMgrError e){
-            JOptionPane.showMessageDialog(null, "GRAMÁTICA INCORRECTA");
+            textPaneErrores.setText(e.getMessage());
+           // JOptionPane.showMessageDialog(null, textErore);
             System.out.println(e.getMessage());
         }
         
@@ -613,12 +616,15 @@ public class IDE extends javax.swing.JFrame {
     }
     
     // Método para imprimir el árbol de análisis en forma de texto
-    public static void printAST(SimpleNode node, String indent) {
-      System.out.println(indent + node.toString());
-      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-        SimpleNode child = (SimpleNode) node.jjtGetChild(i);
-        printAST(child, indent + "  ");
-      }
+    public static String printAST(SimpleNode node, String indent) {
+        
+     StringBuilder sb = new StringBuilder();
+        sb.append(indent).append(node.toString()).append("\n");
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            SimpleNode child = (SimpleNode) node.jjtGetChild(i);
+            sb.append(printAST(child, indent + "  "));
+        }
+        return sb.toString();
     }
     
     

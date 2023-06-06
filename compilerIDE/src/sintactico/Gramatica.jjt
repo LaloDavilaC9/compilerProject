@@ -25,6 +25,7 @@ public class Gramatica{
     public static void main(String [] args) throws ParseException {
         Gramatica analizador = new Gramatica(System.in);
         SimpleNode root = analizador.program();
+        root.dump("");
     }
 }
 
@@ -103,28 +104,233 @@ SKIP :
 }
 
 SimpleNode program():{}{
-<PROGRAM> <LBRACE> (lista_decl() lista_sent())* <RBRACE> <EOF>
-{return jjtThis;}
+<PROGRAM> lbrace() (lista_decl() lista_sent())* rbrace() <EOF>
+{
+    
+    return jjtThis;
+
 }
+}
+
+
+
 void lista_decl():{}{(decl())*}
-void decl():{}{tipo() lista_id() <SEMICOLON>}
-void tipo():{}{<INT> | <FLOAT> | <BOOL>}
-void lista_id():{}{ <ID> ( <COMMA> <ID> )* }
+void decl():{}{tipo() lista_id() semicolon()}
+void tipo():{}{intToken() | floatToken() | boolToken()}
+void lista_id():{}{ id() ( comma() id() )* }
 void lista_sent():{}{ sent() ( sent() )* }
-void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | <BREAK>}
-void sent_if():{}{ <IF> <LPAREN> exp_bool() <RPAREN> <THEN> bloque() (<ELSE> bloque())* <FI> }
-void sent_while():{} {<WHILE> <LPAREN> exp_bool() <RPAREN> bloque()}
-void sent_do():{}{ <DO> bloque() <UNTIL> <LPAREN> exp_bool() <RPAREN> <SEMICOLON>}
-void sent_read():{}{ <READ> <ID> <SEMICOLON>}
-void sent_write():{}{<WRITE> <ID> <SEMICOLON>}
-void bloque():{}{ <LBRACE> lista_sent() <RBRACE>}
-void sent_assign():{}{<ID> <ASSIGN> exp_bool() <SEMICOLON>}
-void exp_bool():{}{ comb() ( <OR> comb() )* }
-void comb():{}{ igualdad() ( <AND> igualdad() )* }
-void igualdad():{}{ rel() ( ( <EQ> | <NEQ> ) rel() )* }
+void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | breakToken()}
+void sent_if():{}{ ifToken() lparen() exp_bool() rparen() then() bloque() (elseToken() bloque())* fi() }
+void sent_while():{} {whileToken() lparen() exp_bool() rparen() bloque()}
+void sent_do():{}{ doToken() bloque() <UNTIL> lparen() exp_bool() rparen() semicolon()}
+void sent_read():{}{ read() id() semicolon()}
+void sent_write():{}{write() id() semicolon()}
+void bloque():{}{ lbrace() lista_sent() rbrace()}
+void sent_assign():{}{id() assign() exp_bool() semicolon()}
+void exp_bool():{}{ comb() ( or() comb() )* }
+void comb():{}{ igualdad() ( and() igualdad() )* }
+void igualdad():{}{ rel() ( ( eq() | neq() ) rel() )* }
 void rel():{}{ expr() [op_rel() expr()]}
-void op_rel():{}{<LT> | <LTE> | <GT> | <GTE>}
-void expr():{}{ term() ( ( <PLUS> | <MINUS> ) term() )* }
-void term():{}{ unario() ( ( <ASTERISK> | <SLASH> ) unario() )* }
-void unario():{}{<NOT> unario() | <MINUS> unario() | factor()}
-void factor():{}{<LPAREN> exp_bool() <RPAREN> | <ID> | <INTEGER> | <REAL> | <TRUE> | <FALSE>}
+void op_rel():{}{lt() | lte() | gt() | gte()}
+void expr():{}{ term() ( ( plus() | minus() ) term() )* }
+void term():{}{ unario() ( ( asterisk() | slash() ) unario() )* }
+void unario():{}{not() unario() | minus() unario() | factor()}
+void factor():{}{lparen() exp_bool() rparen() | id() | integer() | real() | trueToken() | falseToken()}
+
+void lbrace():{}{
+    <LBRACE>
+}
+
+
+public void rbrace():{} {
+    <RBRACE>
+}
+
+public void lbracket():{} {
+    <LBRACKET>
+}
+
+public void rbracket():{} {
+    // Código de la función rbracket
+    <RBRACKET>
+}
+
+public void lparen():{} {
+    // Código de la función lparen
+    <LPAREN>  
+}
+
+public void rparen():{} {
+    // Código de la función rparen
+<RPAREN>
+}
+
+public void semicolon():{} {
+    // Código de la función semicolon
+<SEMICOLON>
+}
+
+public void comma():{} {
+    // Código de la función comma
+<COMMA>
+}
+
+public void assign():{} {
+    // Código de la función assign
+<ASSIGN>
+}
+
+public void or():{} {
+    // Código de la función or
+<OR>
+}
+
+public void and():{} {
+    // Código de la función and
+<AND>
+}
+
+public void eq():{} {
+<EQ>
+    // Código de la función eq
+}
+
+public void neq():{} {
+<NEQ>
+    // Código de la función neq
+}
+
+public void lt():{} {
+<LT>
+    // Código de la función lt
+}
+
+public void lte():{} {
+<LTE>
+    // Código de la función lte
+}
+
+public void gt():{} {
+<GT>
+    // Código de la función gt
+}
+
+public void gte():{} {
+<GTE>
+    // Código de la función gte
+}
+
+public void plus():{} {
+<PLUS>
+    // Código de la función plus
+}
+
+public void minus():{} {
+<MINUS>
+    // Código de la función minus
+}
+
+public void asterisk():{} {
+<ASTERISK>
+    // Código de la función asterisk
+}
+
+public void slash():{} {
+<SLASH>
+    // Código de la función slash
+}
+
+public void not():{} {
+<NOT>
+    // Código de la función not
+}
+
+public void ifToken():{} {
+<IF>
+    // Código de la función ifToken
+}
+
+public void fi():{} {
+<FI>
+    // Código de la función fi
+}
+
+public void elseToken():{} {
+<ELSE>
+    // Código de la función elseToken
+}
+
+public void whileToken():{} {
+<WHILE>
+    // Código de la función whileToken
+}
+
+public void doToken():{} {
+<DO>
+    // Código de la función doToken
+}
+
+public void until():{} {
+<UNTIL>
+    // Código de la función until
+}
+
+public void read():{} {
+<READ>
+    // Código de la función read
+}
+
+public void write():{} {
+<WRITE>
+    // Código de la función write
+}
+
+public void breakToken():{} {
+<BREAK>
+    // Código de la función breakToken
+}
+
+public void intToken():{} {
+<INT>
+    // Código de la función intToken
+}
+
+public void floatToken():{} {
+<FLOAT>
+    // Código de la función floatToken
+}
+
+public void boolToken():{} {
+<BOOL>
+    // Código de la función bool
+}
+
+public void trueToken():{} {
+<TRUE>
+    // Código de la función trueToken
+}
+
+public void falseToken():{} {
+<FALSE>
+    // Código de la función falseToken
+}
+
+public void then():{} {
+<THEN>
+    // Código de la función then
+}
+
+public void id():{} {
+<ID>
+    // Código de la función id
+}
+
+public void integer():{} {
+<INTEGER>
+    // Código de la función integer
+}
+
+public void real():{} {
+<REAL>
+    // Código de la función real
+}

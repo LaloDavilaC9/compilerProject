@@ -26,6 +26,46 @@ public interface GramaticaTreeConstants
   public int JJTTERM = 20;
   public int JJTUNARIO = 21;
   public int JJTFACTOR = 22;
+  public int JJTLBRACE = 23;
+  public int JJTRBRACE = 24;
+  public int JJTLBRACKET = 25;
+  public int JJTRBRACKET = 26;
+  public int JJTLPAREN = 27;
+  public int JJTRPAREN = 28;
+  public int JJTSEMICOLON = 29;
+  public int JJTCOMMA = 30;
+  public int JJTASSIGN = 31;
+  public int JJTOR = 32;
+  public int JJTAND = 33;
+  public int JJTEQ = 34;
+  public int JJTNEQ = 35;
+  public int JJTLT = 36;
+  public int JJTLTE = 37;
+  public int JJTGT = 38;
+  public int JJTGTE = 39;
+  public int JJTPLUS = 40;
+  public int JJTMINUS = 41;
+  public int JJTASTERISK = 42;
+  public int JJTSLASH = 43;
+  public int JJTNOT = 44;
+  public int JJTIFTOKEN = 45;
+  public int JJTFI = 46;
+  public int JJTELSETOKEN = 47;
+  public int JJTWHILETOKEN = 48;
+  public int JJTDOTOKEN = 49;
+  public int JJTUNTIL = 50;
+  public int JJTREAD = 51;
+  public int JJTWRITE = 52;
+  public int JJTBREAKTOKEN = 53;
+  public int JJTINTTOKEN = 54;
+  public int JJTFLOATTOKEN = 55;
+  public int JJTBOOLTOKEN = 56;
+  public int JJTTRUETOKEN = 57;
+  public int JJTFALSETOKEN = 58;
+  public int JJTTHEN = 59;
+  public int JJTID = 60;
+  public int JJTINTEGER = 61;
+  public int JJTREAL = 62;
 
 
   public String[] jjtNodeName = {
@@ -52,6 +92,46 @@ public interface GramaticaTreeConstants
     "term",
     "unario",
     "factor",
+    "lbrace",
+    "rbrace",
+    "lbracket",
+    "rbracket",
+    "lparen",
+    "rparen",
+    "semicolon",
+    "comma",
+    "assign",
+    "or",
+    "and",
+    "eq",
+    "neq",
+    "lt",
+    "lte",
+    "gt",
+    "gte",
+    "plus",
+    "minus",
+    "asterisk",
+    "slash",
+    "not",
+    "ifToken",
+    "fi",
+    "elseToken",
+    "whileToken",
+    "doToken",
+    "until",
+    "read",
+    "write",
+    "breakToken",
+    "intToken",
+    "floatToken",
+    "boolToken",
+    "trueToken",
+    "falseToken",
+    "then",
+    "id",
+    "integer",
+    "real",
   };
 }
-/* JavaCC - OriginalChecksum=05e6b8d2024f208acbde609f82c0596a (do not edit this line) */
+/* JavaCC - OriginalChecksum=d4d95b59bc6422a256597e5a61b42b8c (do not edit this line) */
