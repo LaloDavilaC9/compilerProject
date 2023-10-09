@@ -22,6 +22,7 @@ options{
 
 PARSER_BEGIN(Gramatica)
 package sintactico;
+import jflexpackage.*;
 
 public class Gramatica{
     public static void main(String [] args) throws ParseException {
@@ -139,11 +140,27 @@ void lista_id(String type):{}{
 }
 
 
-void lista_sent():{}{ sent() }
+void lista_sent():{}{ sent() ( sent() )* }
 void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | breakToken()}
-void sent_if():{}{ ifToken() lparen() exp_bool() rparen() then() bloque() (elseToken() bloque())* fi() }
-void sent_while():{} {whileToken() lparen() exp_bool() rparen() bloque()}
-void sent_do():{}{ doToken() bloque() <UNTIL> lparen() exp_bool() rparen() semicolon()}
+void sent_if():{
+    SymbolNode tempVar;
+}{ 
+    ifToken() lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() then() bloque() (elseToken() bloque())* fi() 
+
+}
+
+void sent_while():{
+    SymbolNode tempVar;
+}{
+    whileToken() lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() bloque()
+}
+
+void sent_do():{
+    SymbolNode tempVar;
+}{ 
+    doToken() bloque() <UNTIL> lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() semicolon()
+}
+
 void sent_read():{}{ read() id() semicolon()}
 void sent_write():{}{write() id() semicolon()}
 void bloque():{}{ lbrace() lista_sent() rbrace()}
@@ -154,49 +171,132 @@ void sent_assign():{
     SymbolNode tempVar = null;
 }{
     identifier=idAssign() assign() tempVar=exp_bool() semicolon() ({
-        if(x.Contains(identifier)){
-            SymbolNode id = x.GetIndex(identifier);
-            if(id.type == tempVar.type){
-                x.UpdateIndex(identifier, tempVar);
+        if(SymTable.Contains(identifier)){
+            SymbolNode id = SymTable.GetIndex(identifier);
+            if((id.type == tempVar.type) || (id.type =="float" && (tempVar.type == "float" || tempVar.type=="int"))){
+                SymTable.UpdateIndex(identifier, tempVar);
+                if(id.type =="float" && tempVar.type=="int"){
+                    IDE.errores += "Warning: Pérdida de precisión. \n";
+                }
             }else {//error, tipos de datos diferentes
+                IDE.errores += "Error: El tipo de dato no es compatible. \n";
             }
-        }else{} //error, variable no declarada
+        }else{IDE.errores += "Error: Var no declarada \n";} //error, variable no declarada
     })
 }
 
 
 SymbolNode exp_bool():{
-    SymbolNode acum1 = null;
+    SymbolNode acum1;
+    SymbolNode acum2;
+    SymbolNode acum3 = new SymbolNode("",null);
 }{ 
-    acum1=comb() ( or() comb() )* 
+    acum1=comb() ( or() acum2=comb(){
+                    acum3.value = ((Boolean) acum1.value).booleanValue() || ((Boolean) acum2.value).booleanValue() ? true : false;
+                    acum3.type="bool";
+                    return acum3;
+                 } )* 
     {return acum1;}
 }
 
 
 SymbolNode comb():{
-    SymbolNode acum1 = null;
+    SymbolNode acum1;
+    SymbolNode acum2;
+    SymbolNode acum3 = new SymbolNode("",null);
 }{ 
-    acum1=igualdad() ( and() igualdad() )* 
+    acum1=igualdad() ( and() acum2=igualdad(){
+                      acum3.value = ((Boolean) acum1.value).booleanValue() && ((Boolean) acum2.value).booleanValue() ? true : false; 
+                      acum3.type="bool";
+                      return acum3;
+                     } )* 
     {return acum1;}
 }
 
 
 SymbolNode igualdad():{
-    SymbolNode acum1 = null;
+    SymbolNode acum1;
+    SymbolNode acum2;
+    SymbolNode acum3 = new SymbolNode("",null);
+    String op = "";
 }{ 
-    acum1=rel() ( ( eq() | neq() ) rel() )*
+    acum1=rel() ( ( op=eq() | op=neq() ) acum2=rel(){
+                    double numericValue1 = 0.0;
+                    double numericValue2 = 0.0;
+
+                    if (acum1.value instanceof Integer) {
+                        numericValue1 = (int) acum1.value;
+                    } else if (acum1.value instanceof Double) {
+                        numericValue1 = (double) acum1.value;
+                    }else numericValue1 = ((Boolean) acum1.value).booleanValue() == true ? 1 : 0;
+
+                    if (acum2.value instanceof Integer) {
+                        numericValue2 = (int) acum2.value;
+                    } else if (acum2.value instanceof Double) {
+                        numericValue2 = (double) acum2.value;
+                    }else numericValue2 = ((Boolean) acum2.value).booleanValue() == true ? 1 : 0;
+
+                    switch(op) {
+                        case "==":
+                            acum3.value = numericValue1 == numericValue2;
+                            break;
+                        case "!=":
+                            acum3.value = numericValue1 != numericValue2;
+                            break;
+                    }
+                    acum3.type = "bool";
+                    return acum3;
+                } )*
     {return acum1;}
 }
 
 
 SymbolNode rel():{
-    SymbolNode acum1 = null;
+    SymbolNode acum1;
+    SymbolNode acum2;
+    SymbolNode acum3 = new SymbolNode("", null);
+    String op = "";
 }{ 
-    acum1=expr() [op_rel() expr()]
+    acum1=expr() [op=op_rel() acum2=expr(){
+                    double numericValue1 = 0.0;
+                    double numericValue2 = 0.0;
+
+                    if (acum1.value instanceof Integer) {
+                        numericValue1 = (int) acum1.value;
+                    } else if (acum1.value instanceof Double) {
+                        numericValue1 = (double) acum1.value;
+                    }
+
+                    if (acum2.value instanceof Integer) {
+                        numericValue2 = (int) acum2.value;
+                    } else if (acum2.value instanceof Double) {
+                        numericValue2 = (double) acum2.value;
+                    }
+
+                    switch(op) {
+                        case "<":
+                            acum3.value = numericValue1 < numericValue2;
+                            break;
+                        case "<=":
+                            acum3.value = numericValue1 <= numericValue2;
+                            break;
+                        case ">":
+                            acum3.value = numericValue1 > numericValue2;
+                            break;
+                        case ">=":
+                            acum3.value = numericValue1 >= numericValue2;
+                            break;
+                    }
+                    acum3.type="bool";
+                    return acum3;
+                 }]
     {return acum1;}
 }
 
-void op_rel():{}{lt() | lte() | gt() | gte()}
+String op_rel():{
+    String op ="";
+}{op=lt(){return op;} | op=lte(){return op;} | op=gt(){return op;} | op=gte(){return op;}}
+
 
 
 SymbolNode expr():{
@@ -256,7 +356,7 @@ SymbolNode unario():{
 SymbolNode factor():{
     SymbolNode acum1 = null;
 }{
-    lparen() exp_bool() rparen() {return acum1;}| acum1=id() {return acum1;}| acum1=integer() {return acum1;} | acum1=real() {return acum1;} | trueToken() {return acum1;} | falseToken()
+    lparen() exp_bool() rparen() {return acum1;}| acum1=id() {return acum1;}| acum1=integer() {return acum1;} | acum1=real() {return acum1;} | acum1=trueToken() {return acum1;} | acum1=falseToken()
     {return acum1;}
 }
 
@@ -313,33 +413,33 @@ public void and():{} {
 <AND>
 }
 
-public void eq():{} {
-<EQ>
+public String eq():{} {
+<EQ>{return token.image;}
     // Código de la función eq
 }
 
-public void neq():{} {
-<NEQ>
+public String neq():{} {
+<NEQ>{return token.image;}
     // Código de la función neq
 }
 
-public void lt():{} {
-<LT>
+public String lt():{} {
+<LT>{return token.image;}
     // Código de la función lt
 }
 
-public void lte():{} {
-<LTE>
+public String lte():{} {
+<LTE>{return token.image;}
     // Código de la función lte
 }
 
-public void gt():{} {
-<GT>
+public String gt():{} {
+<GT>{return token.image;}
     // Código de la función gt
 }
 
-public void gte():{} {
-<GTE>
+public String gte():{} {
+<GTE>{return token.image;}
     // Código de la función gte
 }
 
@@ -428,13 +528,13 @@ public String boolToken():{} {
     // Código de la función bool
 }
 
-public void trueToken():{} {
-<TRUE>
-    // Código de la función trueToken
+public SymbolNode trueToken():{} {
+<TRUE>{return new SymbolNode("bool", true);}
+    // Código de la función trueToken  
 }
 
-public void falseToken():{} {
-<FALSE>
+public SymbolNode falseToken():{} {
+<FALSE> {return new SymbolNode("bool", false);}
     // Código de la función falseToken
 }
 
@@ -444,12 +544,12 @@ public void then():{} {
 }
 
 public SymbolNode id():{} {
-<ID>{return x.GetIndex(token.image);}
+<ID>{return SymTable.GetIndex(token.image);}
     // Código de la función id
 }
 
 public void idDecl(String type):{}{
-<ID>{x.AddIndex(token.image, type);}
+<ID>{SymTable.AddIndex(token.image, type);}
 }
 
 public String idAssign():{}{

@@ -6,6 +6,7 @@ package sintactico;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import jflexpackage.IDE;
 
 
 
@@ -24,7 +25,16 @@ class SymbolNode{
 public final class SymTable{
 
     public static HashMap<String, SymbolNode> symbolTable = new HashMap<String, SymbolNode>();
+    
+    public static int tempCount = 0;
+    
 
+    public static void AddTemporalIndex(SymbolNode temp){
+        String id = "temp_" + tempCount;
+        AddIndex(id, temp.type);
+        UpdateIndex(id, temp);
+        tempCount++;
+    }
     public static boolean AddIndex(String id, String type){
         if(symbolTable.containsKey(id)){
             //arrojar error de ID ya existente
@@ -48,9 +58,9 @@ public final class SymTable{
     public static SymbolNode GetIndex(String id){
         if(symbolTable.containsKey(id)) return symbolTable.get(id);
         else{
-            //arrojar error de llave no existente
-            return null;
+            IDE.errores += "ERROR: Var no existe \n";            
         }
+        return new SymbolNode("",null);
     }
 
     public static boolean UpdateIndex(String id, SymbolNode tempVar){
