@@ -1,14 +1,10 @@
 package jflexpackage;
 
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -34,6 +30,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.Element;
 import sintactico.*;
+
 /**
  *
  * @author chido
@@ -47,38 +44,38 @@ public class IDE extends javax.swing.JFrame {
         initComponents();
         //  Code to implement line numbers inside the JTextArea
         textCodigo.getDocument().addDocumentListener(new DocumentListener() {
-           public String getText() {
-              int caretPosition = textCodigo.getDocument().getLength();
-              Element root = textCodigo.getDocument().getDefaultRootElement();
-              String text = "1" + System.getProperty("line.separator");
-                 for(int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
+            public String getText() {
+                int caretPosition = textCodigo.getDocument().getLength();
+                Element root = textCodigo.getDocument().getDefaultRootElement();
+                String text = "1" + System.getProperty("line.separator");
+                for (int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
                     text += i + System.getProperty("line.separator");
-                 }
-              return text;
-           }
-           @Override
-           public void changedUpdate(DocumentEvent de) {
-              textNumeracion.setText(getText());
-           }
-           @Override
-           public void insertUpdate(DocumentEvent de) {
-              textNumeracion.setText(getText());
-           }
-           @Override
-           public void removeUpdate(DocumentEvent de) {
-              textNumeracion.setText(getText());
-           }
+                }
+                return text;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent de) {
+                textNumeracion.setText(getText());
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent de) {
+                textNumeracion.setText(getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent de) {
+                textNumeracion.setText(getText());
+            }
         });
         panelEditor.getViewport().add(textCodigo);
         panelEditor.setRowHeaderView(textNumeracion);
         panelEditorCompilador.add(panelEditor);
     }
-    
-    
 
-    
     @SuppressWarnings("unchecked")
-    
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -91,7 +88,7 @@ public class IDE extends javax.swing.JFrame {
         panelSintactico = new javax.swing.JScrollPane();
         textPaneSintactico = new javax.swing.JTextPane();
         panelSemantico = new javax.swing.JScrollPane();
-        textPaneSemantico = new javax.swing.JTextPane();
+        tablaSimbolos = new javax.swing.JTable();
         panelCodIntermedio = new javax.swing.JScrollPane();
         textPaneCodIntermedio = new javax.swing.JTextPane();
         textNumeracion = new javax.swing.JTextArea();
@@ -176,15 +173,47 @@ public class IDE extends javax.swing.JFrame {
             tablaTokens.getColumnModel().getColumn(1).setResizable(false);
             tablaTokens.getColumnModel().getColumn(2).setResizable(false);
             tablaTokens.getColumnModel().getColumn(3).setResizable(false);
+            tablaTokens.getColumnModel().getColumn(3).setHeaderValue("columna");
         }
 
         panelCompilacion.addTab("Léxico", panelLexico);
 
+        textPaneSintactico.setEditable(false);
+        textPaneSintactico.setBackground(new java.awt.Color(255, 255, 255));
         panelSintactico.setViewportView(textPaneSintactico);
 
         panelCompilacion.addTab("Sintáctico", panelSintactico);
 
-        panelSemantico.setViewportView(textPaneSemantico);
+        tablaSimbolos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "símbolo", "tipo", "valor"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaSimbolos.setEnabled(false);
+        panelSemantico.setViewportView(tablaSimbolos);
+        if (tablaSimbolos.getColumnModel().getColumnCount() > 0) {
+            tablaSimbolos.getColumnModel().getColumn(0).setResizable(false);
+            tablaSimbolos.getColumnModel().getColumn(1).setResizable(false);
+            tablaSimbolos.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         panelCompilacion.addTab("Semántico", panelSemantico);
 
@@ -412,16 +441,16 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_itemCortarActionPerformed
 
     private void itemAbrirArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAbrirArchivoActionPerformed
-        
+
         // Using this process to invoke the constructor,
         // JFileChooser points to user's default directory
         JFileChooser j = new JFileChooser();
 
         // Open the save dialog
         int eleccion = j.showSaveDialog(null);
-        
+
         String data = "";
-        if(eleccion == JFileChooser.APPROVE_OPTION){
+        if (eleccion == JFileChooser.APPROVE_OPTION) {
             try {
                 this.pathArchivo = j.getSelectedFile().toPath();
                 data = new String(Files.readAllBytes(j.getSelectedFile().toPath()));
@@ -432,7 +461,7 @@ public class IDE extends javax.swing.JFrame {
                 Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_itemAbrirArchivoActionPerformed
 
     private void botonDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonDeshacerActionPerformed
@@ -446,50 +475,48 @@ public class IDE extends javax.swing.JFrame {
     private void itemNuevoArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemNuevoArchivoActionPerformed
         this.textCodigo.setText("");
         this.pathArchivo = null;
-        
+
         limpiar_tablaLexico();
     }//GEN-LAST:event_itemNuevoArchivoActionPerformed
 
     private void itemGuardarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarArchivoActionPerformed
         FileWriter file = null;
         try {
-            file = new FileWriter(this.pathArchivo.toFile(),false);
+            file = new FileWriter(this.pathArchivo.toFile(), false);
             BufferedWriter writer = new BufferedWriter(file);
             writer.write(textCodigo.getText());
             writer.close();
         } catch (IOException ex) {
             Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally{
+        } finally {
             try {
                 file.close();
             } catch (IOException ex) {
                 Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_itemGuardarArchivoActionPerformed
 
     private void itemGuardarComoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarComoActionPerformed
-        
+
         JFileChooser j = new JFileChooser();
         FileWriter file = null;
 
         // Open the save dialog
         int eleccion = j.showSaveDialog(null);
-        
+
         String data = "";
-        if(eleccion == JFileChooser.APPROVE_OPTION){
+        if (eleccion == JFileChooser.APPROVE_OPTION) {
             try {
                 this.pathArchivo = j.getSelectedFile().toPath();
-                file = new FileWriter(this.pathArchivo.toFile()+".txt",true);
+                file = new FileWriter(this.pathArchivo.toFile() + ".txt", true);
                 BufferedWriter writer = new BufferedWriter(file);
                 writer.write(textCodigo.getText());
                 writer.close();
             } catch (IOException ex) {
                 Logger.getLogger(IDE.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            finally{
+            } finally {
                 try {
                     file.close();
                 } catch (IOException ex) {
@@ -500,20 +527,20 @@ public class IDE extends javax.swing.JFrame {
     }//GEN-LAST:event_itemGuardarComoActionPerformed
 
     private void menuCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCompilarActionPerformed
-        
+
     }//GEN-LAST:event_menuCompilarActionPerformed
 
     private void menuCompilarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuCompilarMouseClicked
 
-        if(this.pathArchivo != null){
-            itemGuardarArchivoActionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED, null));
+        if (this.pathArchivo != null) {
+            itemGuardarArchivoActionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
             analizador_lexico();
             analizador_sintactico();
-        }
-        else{
+            analizador_semantico();
+        } else {
             JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
         }
-        
+
     }//GEN-LAST:event_menuCompilarMouseClicked
 
     /**
@@ -533,18 +560,18 @@ public class IDE extends javax.swing.JFrame {
             }
         });
     }
-    
+
     //Funciones para cada apartado del compilador
-    public void analizador_lexico(){
-        
+    public void analizador_lexico() {
+
         //Limpiar tabla cada que compilamos
         limpiar_tablaLexico();
-        
-        if(this.pathArchivo != null){
+
+        if (this.pathArchivo != null) {
             //Modelo para tabla
             DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
             //System.out.println("RUTA: "+this.pathArchivo.toString());
-            try{
+            try {
                 //Reader lector = new BufferedReader(new FileReader("D:/Escritorio/Arhcivo prueba cynthia.txt"));
                 Reader lector = new BufferedReader(new FileReader(this.pathArchivo.toString()));
                 Lexer lexer = new Lexer(lector);
@@ -555,65 +582,88 @@ public class IDE extends javax.swing.JFrame {
                     }
 
                     //Agregar filas a la tabla
-                    String fila[]= {lexer.lexema, ""+tokens, ""+lexer.linea, ""+lexer.columna};
+                    String fila[] = {lexer.lexema, "" + tokens, "" + lexer.linea, "" + lexer.columna};
                     modelo.addRow(fila);
 
                 }
-            }
-            catch(Exception x){
+            } catch (Exception x) {
                 System.out.println(x.getMessage());
             }
 
             //Actualizar tabla con los datos
             tablaTokens.setModel(modelo);
+        } else {
+            JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
         }
-        else{
-           JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
-        }
-        
+
     }
-    
-    public void analizador_sintactico(){
+
+    public void analizador_sintactico() {
         limpiar_arbolSintactico();
 
         Gramatica gram;
-        String arbol="";
-        try{
-            
+        String arbol = "";
+        try {
+
             ByteArrayInputStream inputStream = new ByteArrayInputStream(textCodigo.getText().getBytes());
             gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
+
             // Imprimir el árbol de análisis
             arbol = printAST(root, "");
-            
             textPaneSintactico.setText(arbol);
-            
+
             JOptionPane.showMessageDialog(null, "GRAMÁTICA CORRECTA");
 
-        }
-        catch(ParseException | TokenMgrError e){
+        } catch (ParseException | TokenMgrError e) {
             textPaneErrores.setText(e.getMessage());
         }
-        
+
     }
-    
-    
-    public void limpiar_arbolSintactico(){
+
+    public void analizador_semantico() {
+
+        //Limpiar tabla cada que compilamos
+        limpiar_tablaSimbolos();
+
+        //Modelo para tabla
+        DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+
+        String tabla[][] = SymTable.getSymbolTable();
+
+        for (String[] tabla1 : tabla) {
+            modelo.addRow(tabla1);
+        }
+
+        //Actualizar tabla con los datos
+        tablaSimbolos.setModel(modelo);
+
+    }
+
+    //Limpiar pane de analizador sintáctico
+    public void limpiar_arbolSintactico() {
         textPaneSintactico.setText("");
         textPaneErrores.setText("");
     }
-    
+
     //Limpiar tabla de analizador léxico  
-    public void limpiar_tablaLexico(){
+    public void limpiar_tablaLexico() {
         DefaultTableModel modelo = (DefaultTableModel) tablaTokens.getModel();
         modelo.setRowCount(0);
         tablaTokens.setModel(modelo);
     }
-    
+
+    //Limpiar tabla de analizador semántico  
+    public void limpiar_tablaSimbolos() {
+        DefaultTableModel modelo = (DefaultTableModel) tablaSimbolos.getModel();
+        modelo.setRowCount(0);
+        tablaSimbolos.setModel(modelo);
+    }
+
     // Método para imprimir el árbol de análisis en forma de texto
     public static String printAST(SimpleNode node, String indent) {
-        
-     StringBuilder sb = new StringBuilder();
+
+        StringBuilder sb = new StringBuilder();
         sb.append(indent).append(node.toString()).append("\n");
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode) node.jjtGetChild(i);
@@ -621,8 +671,6 @@ public class IDE extends javax.swing.JFrame {
         }
         return sb.toString();
     }
-    
-    
 
     private Path pathArchivo;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -663,13 +711,13 @@ public class IDE extends javax.swing.JFrame {
     private javax.swing.JScrollPane panelSintactico;
     private javax.swing.JPopupMenu.Separator separadorGuardar;
     private javax.swing.JPopupMenu.Separator separadorPortapapeles;
+    private javax.swing.JTable tablaSimbolos;
     private javax.swing.JTable tablaTokens;
     private javax.swing.JTextArea textCodigo;
     private javax.swing.JTextArea textNumeracion;
     private javax.swing.JTextPane textPaneCodIntermedio;
     private javax.swing.JTextPane textPaneErrores;
     private javax.swing.JTextPane textPaneResultados;
-    private javax.swing.JTextPane textPaneSemantico;
     private javax.swing.JTextPane textPaneSintactico;
     // End of variables declaration//GEN-END:variables
 }

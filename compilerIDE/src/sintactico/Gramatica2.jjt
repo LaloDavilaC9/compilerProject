@@ -18,8 +18,6 @@ options{
   FORCE_LA_CHECK = false;
   NODE_PREFIX = "AST";
 }
-
-
 PARSER_BEGIN(Gramatica)
 package sintactico;
 
@@ -27,7 +25,7 @@ public class Gramatica{
     public static void main(String [] args) throws ParseException {
         Gramatica analizador = new Gramatica(System.in);
         SimpleNode root = analizador.program();
-        //root.dump("");
+        root.dump("");
     }
 }
 
@@ -106,40 +104,21 @@ SKIP :
 }
 
 SimpleNode program():{}{
-<PROGRAM> lbrace() ((lista_decl())* (lista_sent())*) rbrace() <EOF>
+<PROGRAM> lbrace() (lista_decl() lista_sent())* rbrace() <EOF>
 {
+    
     return jjtThis;
+
 }
-}
-
-
-
-void lista_decl():{}{decl()}
-
-
-void decl():{
-    String type = "";
-}{
-    type = tipo() lista_id(type) semicolon()
 }
 
 
-String tipo():{
-    String type = "";
-}{
-    type=intToken() {return type;}
-    | type=floatToken(){return type;}  
-    | type=boolToken(){return type;}
 
-}
-
-
-void lista_id(String type):{}{ 
-    idDecl(type) ( comma() idDecl(type) )* 
-}
-
-
-void lista_sent():{}{ sent() }
+void lista_decl():{}{(decl())*}
+void decl():{}{tipo() lista_id() semicolon()}
+void tipo():{}{intToken() | floatToken() | boolToken()}
+void lista_id():{}{ id() ( comma() id() )* }
+void lista_sent():{}{ sent() ( sent() )* }
 void sent():{}{sent_if() | sent_while() | sent_do() | sent_read() | sent_write() | bloque() | sent_assign() | breakToken()}
 void sent_if():{}{ ifToken() lparen() exp_bool() rparen() then() bloque() (elseToken() bloque())* fi() }
 void sent_while():{} {whileToken() lparen() exp_bool() rparen() bloque()}
@@ -147,118 +126,16 @@ void sent_do():{}{ doToken() bloque() <UNTIL> lparen() exp_bool() rparen() semic
 void sent_read():{}{ read() id() semicolon()}
 void sent_write():{}{write() id() semicolon()}
 void bloque():{}{ lbrace() lista_sent() rbrace()}
-
-
-void sent_assign():{
-    String identifier="";
-    SymbolNode tempVar = null;
-}{
-    identifier=idAssign() assign() tempVar=exp_bool() semicolon() ({
-        if(x.Contains(identifier)){
-            SymbolNode id = x.GetIndex(identifier);
-            if(id.type == tempVar.type){
-                x.UpdateIndex(identifier, tempVar);
-            }else {//error, tipos de datos diferentes
-            }
-        }else{} //error, variable no declarada
-    })
-}
-
-
-SymbolNode exp_bool():{
-    SymbolNode acum1 = null;
-}{ 
-    acum1=comb() ( or() comb() )* 
-    {return acum1;}
-}
-
-
-SymbolNode comb():{
-    SymbolNode acum1 = null;
-}{ 
-    acum1=igualdad() ( and() igualdad() )* 
-    {return acum1;}
-}
-
-
-SymbolNode igualdad():{
-    SymbolNode acum1 = null;
-}{ 
-    acum1=rel() ( ( eq() | neq() ) rel() )*
-    {return acum1;}
-}
-
-
-SymbolNode rel():{
-    SymbolNode acum1 = null;
-}{ 
-    acum1=expr() [op_rel() expr()]
-    {return acum1;}
-}
-
+void sent_assign():{}{id() assign() exp_bool() semicolon()}
+void exp_bool():{}{ comb() ( or() comb() )* }
+void comb():{}{ igualdad() ( and() igualdad() )* }
+void igualdad():{}{ rel() ( ( eq() | neq() ) rel() )* }
+void rel():{}{ expr() [op_rel() expr()]}
 void op_rel():{}{lt() | lte() | gt() | gte()}
-
-
-SymbolNode expr():{
-    SymbolNode acum1 = null;
-    SymbolNode acum2 = null;
-}{ 
-    acum1=term() ( ( plus() acum2=term() {
-                        acum1.value = (acum1.type == "float" ? ((Number) acum1.value).doubleValue() : ((Number) acum1.value).intValue())
-                        + (acum2.type == "float" ? ((Number) acum2.value).doubleValue() : ((Number) acum2.value).intValue());
-
-                        if(acum1.type == "float" || acum2.type == "float") acum1.type = "float";
-                        else acum1.type = "int";
-                    } )
-                | ( minus() acum2=term(){
-                        acum1.value = (acum1.type == "float" ? ((Number) acum1.value).doubleValue() : ((Number) acum1.value).intValue())
-                        - (acum2.type == "float" ? ((Number) acum2.value).doubleValue() : ((Number) acum2.value).intValue());
-                        
-                        if(acum1.type == "float" || acum2.type == "float") acum1.type = "float";
-                        else acum1.type = "int";
-                 } ) 
-                 )*
-    {return acum1;} 
-}
-
-
-SymbolNode term():{
-    SymbolNode acum1 = null;
-    SymbolNode acum2 = null;
-}{ 
-    acum1=unario() ( ( asterisk() acum2=unario(){
-                        acum1.value = (acum1.type == "float" ? ((Number) acum1.value).doubleValue() : ((Number) acum1.value).intValue())
-                        * (acum2.type == "float" ? ((Number) acum2.value).doubleValue() : ((Number) acum2.value).intValue());
-
-                        if(acum1.type == "float" || acum2.type == "float") acum1.type = "float";
-                        else acum1.type = "int";
-                    }) 
-                    | (slash() acum2=unario(){
-                        acum1.value = (acum1.type == "float" ? ((Number) acum1.value).doubleValue() : ((Number) acum1.value).intValue())
-                        / (acum2.type == "float" ? ((Number) acum2.value).doubleValue() : ((Number) acum2.value).intValue());
-
-                        if(acum1.type == "float" || acum2.type == "float") acum1.type = "float";
-                        else acum1.type = "int";
-                    })  
-                   )* 
-    {return acum1;}
-}
-
-
-SymbolNode unario():{
-    SymbolNode acum1 = null;
-}{
-    not() unario() | minus() unario() | acum1=factor()
-    {return acum1;}
-}
-
-
-SymbolNode factor():{
-    SymbolNode acum1 = null;
-}{
-    lparen() exp_bool() rparen() {return acum1;}| acum1=id() {return acum1;}| acum1=integer() {return acum1;} | acum1=real() {return acum1;} | trueToken() {return acum1;} | falseToken()
-    {return acum1;}
-}
+void expr():{}{ term() ( ( plus() | minus() ) term() )* }
+void term():{}{ unario() ( ( asterisk() | slash() ) unario() )* }
+void unario():{}{not() unario() | minus() unario() | factor()}
+void factor():{}{lparen() exp_bool() rparen() | id() | integer() | real() | trueToken() | falseToken()}
 
 void lbrace():{}{
     <LBRACE>
@@ -344,12 +221,12 @@ public void gte():{} {
 }
 
 public void plus():{} {
-<PLUS> 
+<PLUS>
     // Código de la función plus
 }
 
 public void minus():{} {
-<MINUS> 
+<MINUS>
     // Código de la función minus
 }
 
@@ -413,18 +290,18 @@ public void breakToken():{} {
     // Código de la función breakToken
 }
 
-public String intToken():{} {
-<INT> {return token.image;}
+public void intToken():{} {
+<INT>
     // Código de la función intToken
 }
 
-public String floatToken():{} {
-<FLOAT> {return token.image;}
+public void floatToken():{} {
+<FLOAT>
     // Código de la función floatToken
 }
 
-public String boolToken():{} {
-<BOOL> {return token.image;}
+public void boolToken():{} {
+<BOOL>
     // Código de la función bool
 }
 
@@ -443,25 +320,17 @@ public void then():{} {
     // Código de la función then
 }
 
-public SymbolNode id():{} {
-<ID>{return x.GetIndex(token.image);}
+public void id():{} {
+<ID>
     // Código de la función id
 }
 
-public void idDecl(String type):{}{
-<ID>{x.AddIndex(token.image, type);}
-}
-
-public String idAssign():{}{
-<ID>{return token.image;}
-}
-
-public SymbolNode integer():{} {
-<INTEGER> {return new SymbolNode("int", Integer.parseInt(token.image));}
+public void integer():{} {
+<INTEGER>
     // Código de la función integer
 }
 
-public SymbolNode real():{} {
-<REAL> {return new SymbolNode("float", Double.parseDouble(token.image));}
+public void real():{} {
+<REAL>
     // Código de la función real
 }

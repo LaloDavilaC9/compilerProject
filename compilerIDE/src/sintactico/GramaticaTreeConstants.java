@@ -64,8 +64,10 @@ public interface GramaticaTreeConstants
   public int JJTFALSETOKEN = 58;
   public int JJTTHEN = 59;
   public int JJTID = 60;
-  public int JJTINTEGER = 61;
-  public int JJTREAL = 62;
+  public int JJTIDDECL = 61;
+  public int JJTIDASSIGN = 62;
+  public int JJTINTEGER = 63;
+  public int JJTREAL = 64;
 
 
   public String[] jjtNodeName = {
@@ -130,8 +132,10 @@ public interface GramaticaTreeConstants
     "falseToken",
     "then",
     "id",
+    "idDecl",
+    "idAssign",
     "integer",
     "real",
   };
 }
-/* JavaCC - OriginalChecksum=d4d95b59bc6422a256597e5a61b42b8c (do not edit this line) */
+/* JavaCC - OriginalChecksum=f66f1ee70dd82e089dedd2c42a182dd7 (do not edit this line) */
