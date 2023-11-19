@@ -78,6 +78,8 @@ public final class SymTable{
     }
 
     public static void ClearSymbolTable(){
+        tempCount = 0;
+        System.out.println(tempCount);
         symbolTable.clear();
     }
     
