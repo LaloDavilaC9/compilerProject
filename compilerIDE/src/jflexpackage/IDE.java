@@ -19,6 +19,8 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -537,6 +539,7 @@ public class IDE extends javax.swing.JFrame {
             analizador_lexico();
             analizador_sintactico();
             analizador_semantico();
+            codigoIntermedio();
         } else {
             JOptionPane.showMessageDialog(null, "¡Guarde primero el código antes de compilar!");
         }
@@ -600,16 +603,16 @@ public class IDE extends javax.swing.JFrame {
 
     public void analizador_sintactico() {
         limpiar_arbolSintactico();
-
+        limpiar_codigoIntermedio();
         Gramatica gram;
         String arbol = "";
         try {
-
+            SymTable.ClearSymbolTable();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(textCodigo.getText().getBytes());
             gram = new Gramatica(inputStream);
             SimpleNode root = gram.program();
 
-            // Imprimir el árbol de análisis
+            // Imprimir el árbol de análisis y obtener listado de código intermedio
             arbol = printAST(root, "");
             textPaneSintactico.setText(arbol);
 
@@ -639,6 +642,96 @@ public class IDE extends javax.swing.JFrame {
         tablaSimbolos.setModel(modelo);
 
     }
+    
+    public void codigoIntermedio(){
+        System.out.println(tokensCI);
+        StringBuilder intermedio = new StringBuilder();
+        int index = 0;
+        int indexTemp = 1;
+        int indexLabel = 1;
+        int indexGoto = 1;
+        while (index < tokensCI.size()-1) {
+            //Declaración
+            if("Declaracion".equals(tokensCI.get(index))){
+                index++;
+                
+                //Obtener tipo de dato
+                String auxDecl = tokensCI.get(index);
+                index++;
+               
+                //Añadir código intermedio declaración
+                while(!";".equals(tokensCI.get(index))){
+                    if(!",".equals(tokensCI.get(index))){
+                        intermedio.append(auxDecl).append(" ").append(tokensCI.get(index)).append("\n");
+                    }
+                    index++;
+                }
+            }
+            //Asignación
+            if("Asignacion".equals(tokensCI.get(index))){
+                index++;
+                
+                //Obtener varible en donde se guardará el dato
+                String auxVariable = tokensCI.get(index);
+                index++;
+                index++;
+               
+                //Cadena temporal
+                String expresionT = "";
+                int numExp = 0;
+                
+                while(!";".equals(tokensCI.get(index))){
+                    expresionT += tokensCI.get(index) + " ";
+                    if("+".equals(tokensCI.get(index)) || "-".equals(tokensCI.get(index)) || "*".equals(tokensCI.get(index)) || "/".equals(tokensCI.get(index))){
+                        numExp++;
+                    }
+                    index++;
+                }  
+                
+                switch(numExp){
+                    case 0:  
+                        intermedio.append(auxVariable).append(" = ");
+                        if("true ".equals(expresionT)){
+                            intermedio.append(1).append("\n");
+                        }else{
+                            if("false ".equals(expresionT)){
+                                intermedio.append(0).append("\n");
+                            }else{
+                                intermedio.append(expresionT).append("\n");
+                            }
+                        } 
+                        break;
+                    default:
+                        String[] tokensExp= expresionT.split(" ");
+                        for (int i = 0; i <= tokensExp.length - 2; i = i + 2) {
+                            if(i == 0){
+                                intermedio.append("T").append(indexTemp).append(" = ").append(tokensExp[i]);
+                            }
+                            else{
+                                intermedio.append("T").append(indexTemp).append(" = T").append(indexTemp-1);
+                            }
+                            intermedio.append(" ").append(tokensExp[i + 1]).append(" ").append(tokensExp[i + 2]).append("\n");
+                            indexTemp++;
+                        }
+                        intermedio.append(auxVariable).append(" = T").append(indexTemp-1).append("\n");
+                        break;
+                }
+            }
+            //Write
+            if("write".equals(tokensCI.get(index))){
+                index++;
+                intermedio.append("write").append(" ").append(tokensCI.get(index)).append("\n");
+            }
+            //Read
+            if("read".equals(tokensCI.get(index))){
+                index++;
+                intermedio.append("read").append(" ").append(tokensCI.get(index)).append("\n");
+            }
+            index++;
+        }
+        System.out.println(intermedio.toString());
+        System.out.println(indexTemp);
+    }
 
     //Limpiar pane de analizador sintáctico
     public void limpiar_arbolSintactico() {
@@ -659,11 +752,23 @@ public class IDE extends javax.swing.JFrame {
         modelo.setRowCount(0);
         tablaSimbolos.setModel(modelo);
     }
+    
+    //Limpiar pane de código intermedio
+    public void limpiar_codigoIntermedio(){
+        textPaneCodIntermedio.setText("");
+        tokensCI.clear();
+    }
 
     // Método para imprimir el árbol de análisis en forma de texto
     public static String printAST(SimpleNode node, String indent) {
-
         StringBuilder sb = new StringBuilder();
+        
+        //Obtener valores para código intermedio
+        if(node.jjtGetValue() != null){
+            //System.out.println(indent + node.jjtGetValue());
+            tokensCI.add((String) node.jjtGetValue());
+        }
+        
         sb.append(indent).append(node.toString()).append("\n");
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode) node.jjtGetChild(i);
@@ -671,8 +776,12 @@ public class IDE extends javax.swing.JFrame {
         }
         return sb.toString();
     }
-
+    
+    //Método para retornar Valores de árbol sintáctico
+    
     private Path pathArchivo;
+    public static String errores;
+    private static List<String> tokensCI = new ArrayList<>();
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar.Separator SeparadorA;
     private javax.swing.JToolBar barraHerrArchivo;

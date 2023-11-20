@@ -120,6 +120,8 @@ void lista_decl():{}{decl()}
 
 void decl():{
     String type = "";
+    //CMTC1
+    jjtThis.value = "Declaracion";
 }{
     type = tipo() lista_id(type) semicolon()
 }
@@ -158,7 +160,7 @@ void sent_while():{
 void sent_do():{
     SymbolNode tempVar;
 }{ 
-    doToken() bloque() <UNTIL> lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() semicolon()
+    doToken() bloque() until() lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() semicolon()
 }
 
 void sent_read():{}{ read() id() semicolon()}
@@ -169,6 +171,7 @@ void bloque():{}{ lbrace() lista_sent() rbrace()}
 void sent_assign():{
     String identifier="";
     SymbolNode tempVar = null;
+    jjtThis.value = "Asignacion";
 }{
     identifier=idAssign() assign() tempVar=exp_bool() semicolon() ({
         if(SymTable.Contains(identifier)){
@@ -360,208 +363,313 @@ SymbolNode factor():{
     {return acum1;}
 }
 
-void lbrace():{}{
+void lbrace():{} {
     <LBRACE>
+    {
+        jjtThis.value="{";
+    }
 }
 
 
 public void rbrace():{} {
     <RBRACE>
+    {
+        jjtThis.value="}";
+    }
 }
 
 public void lbracket():{} {
     <LBRACKET>
+    {
+        jjtThis.value="[";
+    }
 }
 
 public void rbracket():{} {
-    // Código de la función rbracket
     <RBRACKET>
+    {
+        jjtThis.value="]";
+    }
 }
 
 public void lparen():{} {
-    // Código de la función lparen
-    <LPAREN>  
+    <LPAREN>
+    {
+        jjtThis.value="(";
+    }
 }
 
 public void rparen():{} {
-    // Código de la función rparen
-<RPAREN>
+    <RPAREN>
+    {
+        jjtThis.value=")";
+    }
 }
 
 public void semicolon():{} {
-    // Código de la función semicolon
-<SEMICOLON>
+    <SEMICOLON>
+    {
+        jjtThis.value=";";
+    }
 }
 
 public void comma():{} {
-    // Código de la función comma
-<COMMA>
+    <COMMA>
+    {
+        jjtThis.value=",";
+    }
 }
 
 public void assign():{} {
-    // Código de la función assign
-<ASSIGN>
+    <ASSIGN>
+    {
+        jjtThis.value="=";
+    }
 }
 
 public void or():{} {
-    // Código de la función or
-<OR>
+    <OR>
+    {
+        jjtThis.value="or";
+    }
 }
 
 public void and():{} {
-    // Código de la función and
-<AND>
+    <AND>
+    {
+        jjtThis.value="and";
+    }
 }
 
 public String eq():{} {
-<EQ>{return token.image;}
-    // Código de la función eq
+    <EQ>
+    {
+        jjtThis.value="==";
+        return token.image;
+    }
 }
 
 public String neq():{} {
-<NEQ>{return token.image;}
-    // Código de la función neq
+    <NEQ>
+    {
+        jjtThis.value="!=";
+        return token.image;
+    }
 }
 
 public String lt():{} {
-<LT>{return token.image;}
-    // Código de la función lt
+    <LT>
+    {
+        jjtThis.value="<";
+        return token.image;
+    }
 }
 
 public String lte():{} {
-<LTE>{return token.image;}
-    // Código de la función lte
+    <LTE>
+    {
+        jjtThis.value="<=";
+        return token.image;
+    }
 }
 
 public String gt():{} {
-<GT>{return token.image;}
-    // Código de la función gt
+    <GT>
+    {
+        jjtThis.value=">";
+        return token.image;
+    }
 }
 
 public String gte():{} {
-<GTE>{return token.image;}
-    // Código de la función gte
+    <GTE>
+    {
+        jjtThis.value=">=";
+        return token.image;
+    }
 }
 
 public void plus():{} {
-<PLUS> 
-    // Código de la función plus
+    <PLUS> 
+    {
+        jjtThis.value="+";
+    }
 }
 
 public void minus():{} {
-<MINUS> 
-    // Código de la función minus
+    <MINUS> 
+    {
+        jjtThis.value="-";
+    }
 }
 
 public void asterisk():{} {
-<ASTERISK>
-    // Código de la función asterisk
+    <ASTERISK>
+    {
+        jjtThis.value="*";
+    }
 }
 
 public void slash():{} {
-<SLASH>
-    // Código de la función slash
+    <SLASH>
+    {
+        jjtThis.value="/";
+    }
 }
 
-public void not():{} {
-<NOT>
-    // Código de la función not
+public void not():{}{
+    <NOT>
+    {
+        jjtThis.value="not";
+    }
 }
 
 public void ifToken():{} {
-<IF>
-    // Código de la función ifToken
+    <IF>
+    {
+        jjtThis.value="if";
+    }
 }
 
 public void fi():{} {
-<FI>
-    // Código de la función fi
+    <FI>
+    {
+        jjtThis.value="fi";
+    }
 }
 
 public void elseToken():{} {
-<ELSE>
-    // Código de la función elseToken
+    <ELSE>
+    {
+        jjtThis.value="else";
+    }
 }
 
 public void whileToken():{} {
-<WHILE>
-    // Código de la función whileToken
+    <WHILE>
+    {
+        jjtThis.value="while";
+    }
 }
 
 public void doToken():{} {
-<DO>
-    // Código de la función doToken
+    <DO>
+    {
+        jjtThis.value="do";
+    }
 }
 
 public void until():{} {
-<UNTIL>
-    // Código de la función until
+    <UNTIL>
+    {
+        jjtThis.value="until";
+    }
 }
 
 public void read():{} {
-<READ>
-    // Código de la función read
+    <READ>
+    {
+        jjtThis.value="read";
+    }
 }
 
 public void write():{} {
-<WRITE>
-    // Código de la función write
+    <WRITE>
+    {
+        jjtThis.value="write";
+    }
 }
 
 public void breakToken():{} {
-<BREAK>
-    // Código de la función breakToken
+    <BREAK>
+    {
+        jjtThis.value="break";
+    }
 }
 
 public String intToken():{} {
-<INT> {return token.image;}
-    // Código de la función intToken
+    <INT> 
+    {
+        jjtThis.value="int";
+        return token.image;
+    }
 }
 
 public String floatToken():{} {
-<FLOAT> {return token.image;}
-    // Código de la función floatToken
+    <FLOAT> 
+    {
+        jjtThis.value="float";
+        return token.image;
+    }
 }
 
 public String boolToken():{} {
-<BOOL> {return token.image;}
-    // Código de la función bool
+    <BOOL> 
+    {
+        jjtThis.value="bool";
+        return token.image;
+    }
 }
 
 public SymbolNode trueToken():{} {
-<TRUE>{return new SymbolNode("bool", true);}
-    // Código de la función trueToken  
+    <TRUE>
+    {
+        jjtThis.value="true";
+        return new SymbolNode("bool", true);
+    }
 }
 
 public SymbolNode falseToken():{} {
-<FALSE> {return new SymbolNode("bool", false);}
-    // Código de la función falseToken
+    <FALSE> 
+    {
+        jjtThis.value="false";
+        return new SymbolNode("bool", false);
+    }
 }
 
 public void then():{} {
-<THEN>
-    // Código de la función then
+    <THEN>
+    {
+        jjtThis.value="then";
+    }
 }
 
 public SymbolNode id():{} {
-<ID>{return SymTable.GetIndex(token.image);}
-    // Código de la función id
+    <ID>
+    {
+        jjtThis.value="" + token.image;
+        return SymTable.GetIndex(token.image);
+    }
 }
 
-public void idDecl(String type):{}{
-<ID>{SymTable.AddIndex(token.image, type);}
+public void idDecl(String type):{} {
+    <ID>
+    {
+        jjtThis.value="" + token.image;
+        SymTable.AddIndex(token.image, type);
+    }
 }
 
-public String idAssign():{}{
-<ID>{return token.image;}
+public String idAssign():{} {
+    <ID>
+    {
+        jjtThis.value="" + token.image;
+        return token.image;
+    }
 }
 
 public SymbolNode integer():{} {
-<INTEGER> {return new SymbolNode("int", Integer.parseInt(token.image));}
-    // Código de la función integer
+    <INTEGER> 
+    {
+        jjtThis.value="" + token.image;
+        return new SymbolNode("int", Integer.parseInt(token.image));
+    }
 }
 
 public SymbolNode real():{} {
-<REAL> {return new SymbolNode("float", Double.parseDouble(token.image));}
-    // Código de la función real
+    <REAL>
+    {
+        jjtThis.value="" + token.image;
+        return new SymbolNode("float", Double.parseDouble(token.image));
+    }
 }

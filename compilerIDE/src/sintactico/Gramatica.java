@@ -110,6 +110,8 @@ if (jjtc000) {
     SimpleNode jjtn000 = new SimpleNode(JJTDECL);
     boolean jjtc000 = true;
     jjtree.openNodeScope(jjtn000);String type = "";
+    //CMTC1
+    jjtn000.value = "Declaracion";
     try {
       type = tipo();
       lista_id(type);
@@ -428,7 +430,7 @@ if (jjtc000) {
     try {
       doToken();
       bloque();
-      jj_consume_token(UNTIL);
+      until();
       lparen();
       tempVar = exp_bool();
 SymTable.AddTemporalIndex(tempVar);
@@ -547,6 +549,7 @@ if (jjtc000) {
     boolean jjtc000 = true;
     jjtree.openNodeScope(jjtn000);String identifier="";
     SymbolNode tempVar = null;
+    jjtn000.value = "Asignacion";
     try {
       identifier = idAssign();
       assign();
@@ -1193,6 +1196,9 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LBRACE);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="{";
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1206,6 +1212,9 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(RBRACE);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="}";
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1219,6 +1228,9 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LBRACKET);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="[";
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1232,6 +1244,9 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(RBRACKET);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="]";
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1245,6 +1260,9 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LPAREN);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="(";
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1258,10 +1276,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(RPAREN);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value=")";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1271,10 +1292,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(SEMICOLON);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value=";";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1284,10 +1308,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(COMMA);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value=",";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1297,10 +1324,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(ASSIGN);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="=";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1310,10 +1340,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(OR);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="or";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1323,10 +1356,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(AND);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="and";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1338,11 +1374,12 @@ if (jjtc000) {
       jj_consume_token(EQ);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-{if ("" != null) return token.image;}
+jjtn000.value="==";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1354,12 +1391,13 @@ if (jjtc000) {
     try {
       jj_consume_token(NEQ);
 jjtree.closeNodeScope(jjtn000, true);
-       jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value="!=";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1372,11 +1410,12 @@ if (jjtc000) {
       jj_consume_token(LT);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-{if ("" != null) return token.image;}
+jjtn000.value="<";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1388,12 +1427,13 @@ if (jjtc000) {
     try {
       jj_consume_token(LTE);
 jjtree.closeNodeScope(jjtn000, true);
-       jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value="<=";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1406,11 +1446,12 @@ if (jjtc000) {
       jj_consume_token(GT);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-{if ("" != null) return token.image;}
+jjtn000.value=">";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1422,12 +1463,13 @@ if (jjtc000) {
     try {
       jj_consume_token(GTE);
 jjtree.closeNodeScope(jjtn000, true);
-       jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value=">=";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1438,10 +1480,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(PLUS);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="+";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1451,10 +1496,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(MINUS);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="-";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1464,10 +1512,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(ASTERISK);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="*";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1477,10 +1528,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(SLASH);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="/";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1490,10 +1544,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(NOT);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="not";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1503,10 +1560,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(IF);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="if";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1516,10 +1576,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(FI);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="fi";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1529,10 +1592,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(ELSE);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="else";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1542,10 +1608,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(WHILE);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="while";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1555,10 +1624,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(DO);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="do";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1568,10 +1640,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(UNTIL);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="until";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1581,10 +1656,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(READ);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="read";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1594,10 +1672,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(WRITE);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="write";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1607,10 +1688,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(BREAK);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="break";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1621,12 +1705,13 @@ if (jjtc000) {
     try {
       jj_consume_token(INT);
 jjtree.closeNodeScope(jjtn000, true);
-        jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value="int";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1638,12 +1723,13 @@ if (jjtc000) {
     try {
       jj_consume_token(FLOAT);
 jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value="float";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1655,12 +1741,13 @@ if (jjtc000) {
     try {
       jj_consume_token(BOOL);
 jjtree.closeNodeScope(jjtn000, true);
-         jjtc000 = false;
-{if ("" != null) return token.image;}
+      jjtc000 = false;
+jjtn000.value="bool";
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1672,12 +1759,13 @@ if (jjtc000) {
     try {
       jj_consume_token(TRUE);
 jjtree.closeNodeScope(jjtn000, true);
-        jjtc000 = false;
-{if ("" != null) return new SymbolNode("bool", true);}
+      jjtc000 = false;
+jjtn000.value="true";
+        {if ("" != null) return new SymbolNode("bool", true);}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1689,12 +1777,13 @@ if (jjtc000) {
     try {
       jj_consume_token(FALSE);
 jjtree.closeNodeScope(jjtn000, true);
-          jjtc000 = false;
-{if ("" != null) return new SymbolNode("bool", false);}
+      jjtc000 = false;
+jjtn000.value="false";
+        {if ("" != null) return new SymbolNode("bool", false);}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1705,10 +1794,13 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(THEN);
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value="then";
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1720,11 +1812,12 @@ if (jjtc000) {
       jj_consume_token(ID);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-{if ("" != null) return SymTable.GetIndex(token.image);}
+jjtn000.value="" + token.image;
+        {if ("" != null) return SymTable.GetIndex(token.image);}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1737,11 +1830,12 @@ if (jjtc000) {
       jj_consume_token(ID);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-SymTable.AddIndex(token.image, type);
+jjtn000.value="" + token.image;
+        SymTable.AddIndex(token.image, type);
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
   }
 
@@ -1753,11 +1847,12 @@ if (jjtc000) {
       jj_consume_token(ID);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-{if ("" != null) return token.image;}
+jjtn000.value="" + token.image;
+        {if ("" != null) return token.image;}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1769,12 +1864,13 @@ if (jjtc000) {
     try {
       jj_consume_token(INTEGER);
 jjtree.closeNodeScope(jjtn000, true);
-            jjtc000 = false;
-{if ("" != null) return new SymbolNode("int", Integer.parseInt(token.image));}
+      jjtc000 = false;
+jjtn000.value="" + token.image;
+        {if ("" != null) return new SymbolNode("int", Integer.parseInt(token.image));}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
@@ -1786,12 +1882,13 @@ if (jjtc000) {
     try {
       jj_consume_token(REAL);
 jjtree.closeNodeScope(jjtn000, true);
-         jjtc000 = false;
-{if ("" != null) return new SymbolNode("float", Double.parseDouble(token.image));}
+      jjtc000 = false;
+jjtn000.value="" + token.image;
+        {if ("" != null) return new SymbolNode("float", Double.parseDouble(token.image));}
     } finally {
 if (jjtc000) {
-    jjtree.closeNodeScope(jjtn000, true);
-  }
+        jjtree.closeNodeScope(jjtn000, true);
+      }
     }
     throw new Error("Missing return statement in function");
   }
