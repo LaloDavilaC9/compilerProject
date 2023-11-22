@@ -402,6 +402,9 @@ if (jjtc000) {
 SymTable.AddTemporalIndex(tempVar);
       rparen();
       bloque();
+jjtree.closeNodeScope(jjtn000, true);
+      jjtc000 = false;
+jjtn000.value= "SentWhile";
     } catch (Throwable jjte000) {
 if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);

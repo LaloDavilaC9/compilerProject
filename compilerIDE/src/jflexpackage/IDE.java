@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -42,7 +43,6 @@ public class IDE extends javax.swing.JFrame {
     /**
      * Creates new form IDE
      */
-    
     public IDE() {
         initComponents();
         //  Code to implement line numbers inside the JTextArea
@@ -643,99 +643,182 @@ public class IDE extends javax.swing.JFrame {
         tablaSimbolos.setModel(modelo);
 
     }
-    
-    public void codigoIntermedio(){
+
+    public void codigoIntermedio() {
         System.out.println(tokensCI);
         StringBuilder intermedio = new StringBuilder();
         int index = 0;
         int indexTemp = 1;
         int indexLabel = 1;
         int indexGoto = 1;
-        while (index < tokensCI.size()-1) {
+        Stack<Integer> labelList = new Stack<Integer>();
+        while (index < tokensCI.size()) {
             //Declaración
-            if("Declaracion".equals(tokensCI.get(index))){
+            if ("Declaracion".equals(tokensCI.get(index))) {
                 index++;
-                
+
                 //Obtener tipo de dato
                 String auxDecl = tokensCI.get(index);
                 index++;
-               
+
                 //Añadir código intermedio declaración
-                while(!";".equals(tokensCI.get(index))){
-                    if(!",".equals(tokensCI.get(index))){
+                while (!";".equals(tokensCI.get(index))) {
+                    if (!",".equals(tokensCI.get(index))) {
                         intermedio.append(auxDecl).append(" ").append(tokensCI.get(index)).append("\n");
                     }
                     index++;
                 }
-            }
-            //Asignación
-            if("Asignacion".equals(tokensCI.get(index))){
+            } else //Asignación
+            if ("Asignacion".equals(tokensCI.get(index))) {
                 index++;
-                
+
                 //Obtener varible en donde se guardará el dato
                 String auxVariable = tokensCI.get(index);
                 index++;
                 index++;
-               
+
                 //Cadena temporal
                 String expresionT = "";
                 int numExp = 0;
-                
-                while(!";".equals(tokensCI.get(index))){
+
+                while (!";".equals(tokensCI.get(index))) {
                     expresionT += tokensCI.get(index) + " ";
-                    if("+".equals(tokensCI.get(index)) || "-".equals(tokensCI.get(index)) || "*".equals(tokensCI.get(index)) || "/".equals(tokensCI.get(index))){
+                    if ("+".equals(tokensCI.get(index)) || "-".equals(tokensCI.get(index)) || "*".equals(tokensCI.get(index)) || "/".equals(tokensCI.get(index))) {
                         numExp++;
                     }
                     index++;
-                }  
-                
-                switch(numExp){
-                    case 0:  
+                }
+
+                switch (numExp) {
+                    case 0:
                         intermedio.append(auxVariable).append(" = ");
-                        if("true ".equals(expresionT)){
+                        if ("true ".equals(expresionT)) {
                             intermedio.append(1).append("\n");
-                        }else{
-                            if("false ".equals(expresionT)){
+                        } else {
+                            if ("false ".equals(expresionT)) {
                                 intermedio.append(0).append("\n");
-                            }else{
+                            } else {
                                 intermedio.append(expresionT).append("\n");
                             }
-                        } 
+                        }
                         break;
                     default:
-                        String[] tokensExp= expresionT.split(" ");
+                        String[] tokensExp = expresionT.split(" ");
                         for (int i = 0; i <= tokensExp.length - 2; i = i + 2) {
-                            if(i == 0){
+                            if (i == 0) {
                                 intermedio.append("T").append(indexTemp).append(" = ").append(tokensExp[i]);
-                            }
-                            else{
-                                intermedio.append("T").append(indexTemp).append(" = T").append(indexTemp-1);
+                            } else {
+                                intermedio.append("T").append(indexTemp).append(" = T").append(indexTemp - 1);
                             }
                             intermedio.append(" ").append(tokensExp[i + 1]).append(" ").append(tokensExp[i + 2]).append("\n");
                             indexTemp++;
                         }
-                        intermedio.append(auxVariable).append(" = T").append(indexTemp-1).append("\n");
+                        intermedio.append(auxVariable).append(" = T").append(indexTemp - 1).append("\n");
                         break;
                 }
-            }
-            if ("do".equals(tokensCI.get(index))){
+            } else //Do
+            if ("do".equals(tokensCI.get(index))) {
                 index++;
-                //L1 TRUE
-               // intermedio.
-                //L2 FALSE
-                
-                //intermedio.append("L").append(indexLabel).append(":")
-                
-            }
-            //Write
-            if("write".equals(tokensCI.get(index))){
+                intermedio.append("L").append(indexLabel).append(":").append("\n");
+                labelList.push(indexLabel);
+                indexLabel++;
+            } else //Write
+            if ("write".equals(tokensCI.get(index))) {
                 index++;
                 intermedio.append("write").append(" ").append(tokensCI.get(index)).append("\n");
-            }
-            //Read
-            if("read".equals(tokensCI.get(index))){
+            } else //Read
+            if ("read".equals(tokensCI.get(index))) {
                 index++;
                 intermedio.append("read").append(" ").append(tokensCI.get(index)).append("\n");
+            } else //While
+            if ("while".equals(tokensCI.get(index))) {
+                intermedio.append("L").append(indexLabel).append(":").append("\n");
+                int inicioWhile = indexLabel;
+                indexLabel++;
+                index++;
+                intermedio.append("if ");
+                int salidaWhile = indexLabel;
+                labelList.push(indexLabel);
+                labelList.push(inicioWhile);
+                indexLabel++;
+                
+                int inicioBloque = indexLabel;
+                indexLabel++;
+                while (!"Bloque".equals(tokensCI.get(index))) {
+                    if ("and".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(indexLabel).append("\n").append("goto ").append("L").append(salidaWhile).append("\nL")
+                                .append(indexLabel).append(":\nif ");
+                        indexLabel++;
+                    } else if ("or".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(inicioBloque).append("\nif ");
+                    } else {
+                        intermedio.append(tokensCI.get(index)).append(" ");
+                    }
+                    index++;
+                }
+                //intermedio.append("goto L").append(salidaWhile).append("\n");
+                intermedio.append("goto L").append(inicioBloque).append("\n").append("goto ").append("L").append(salidaWhile).append("\n");
+                intermedio.append("L").append(inicioBloque).append(":").append("\n");
+            } else //If
+            if ("if".equals(tokensCI.get(index))) {
+                index++;
+                intermedio.append("if ");
+                labelList.push(indexLabel);
+                int salidaIf = indexLabel;
+                indexLabel++;
+                int inicioIf = indexLabel;
+                indexLabel++;
+                while (!"then".equals(tokensCI.get(index))) {
+                    if ("and".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(indexLabel).append("\n").append("goto ").append("L").append(salidaIf).append("\nL")
+                                .append(indexLabel).append(":\nif ");
+                        indexLabel++;
+                    } else if ("or".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(inicioIf).append("\nif ");
+                    } else {
+                        intermedio.append(tokensCI.get(index)).append(" ");
+                    }
+                    index++;
+                }
+                intermedio.append("goto L").append(inicioIf).append("\n");
+                intermedio.append("goto L").append(salidaIf).append("\n");
+                intermedio.append("L").append(inicioIf).append(":").append("\n");
+            } else //Fi
+            if ("fi".equals(tokensCI.get(index))) {
+                intermedio.append("L").append(labelList.pop()).append(":\n");
+            } else //Else
+            if ("else".equals(tokensCI.get(index))) {
+                int inicioElse = labelList.pop();
+                intermedio.append("goto L").append(indexLabel).append("\n");
+                labelList.push(indexLabel);
+                indexLabel++;
+                intermedio.append("L").append(inicioElse).append(":\n");
+            } else //Until
+            if ("until".equals(tokensCI.get(index))) {
+                index++;
+                intermedio.append("if ");
+                int salidaWhile = indexLabel;
+                int inicioWhile = labelList.pop();
+                indexLabel++;
+                while (!";".equals(tokensCI.get(index))) {
+                    if ("and".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(indexLabel).append("\n").append("goto ").append("L").append(salidaWhile).append("\nL")
+                                .append(indexLabel).append(":\nif ");
+                        indexLabel++;
+                    } else if ("or".equals(tokensCI.get(index))) {
+                        intermedio.append("goto L").append(inicioWhile).append("\nif ");
+                    } else {
+                        intermedio.append(tokensCI.get(index)).append(" ");
+                    }
+                    index++;
+                }
+                intermedio.append("goto L").append(inicioWhile).append("\n");
+                intermedio.append("L").append(salidaWhile).append(":").append("\n");
+
+            }else
+            if("finWhile".equals(tokensCI.get(index))){
+                intermedio.append("goto L").append(labelList.pop()).append("\n");
+                intermedio.append("L").append(labelList.pop()).append(":\n");
             }
             index++;
         }
@@ -762,9 +845,9 @@ public class IDE extends javax.swing.JFrame {
         modelo.setRowCount(0);
         tablaSimbolos.setModel(modelo);
     }
-    
+
     //Limpiar pane de código intermedio
-    public void limpiar_codigoIntermedio(){
+    public void limpiar_codigoIntermedio() {
         textPaneCodIntermedio.setText("");
         tokensCI.clear();
     }
@@ -772,23 +855,30 @@ public class IDE extends javax.swing.JFrame {
     // Método para imprimir el árbol de análisis en forma de texto
     public static String printAST(SimpleNode node, String indent) {
         StringBuilder sb = new StringBuilder();
-        
+
         //Obtener valores para código intermedio
-        if(node.jjtGetValue() != null){
+        if (node.jjtGetValue() != null) {
             System.out.println(indent + node.jjtGetValue());
-            tokensCI.add((String) node.jjtGetValue());
+            if(!"SentWhile".equals((String) node.jjtGetValue())){
+                tokensCI.add((String) node.jjtGetValue());
+            }
         }
-        
+
         sb.append(indent).append(node.toString()).append("\n");
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode) node.jjtGetChild(i);
             sb.append(printAST(child, indent + "  "));
         }
+
+        if (node.jjtGetValue() != null) {
+            if (node.jjtGetValue().equals("SentWhile")) {
+                tokensCI.add(("finWhile"));
+            }
+        }
         return sb.toString();
     }
-    
+
     //Método para retornar Valores de árbol sintáctico
-    
     private Path pathArchivo;
     public static String errores;
     private static List<String> tokensCI = new ArrayList<>();

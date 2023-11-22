@@ -155,6 +155,7 @@ void sent_while():{
     SymbolNode tempVar;
 }{
     whileToken() lparen() tempVar=exp_bool(){ SymTable.AddTemporalIndex(tempVar); } rparen() bloque()
+    {jjtThis.value= "SentWhile";}
 }
 
 void sent_do():{
