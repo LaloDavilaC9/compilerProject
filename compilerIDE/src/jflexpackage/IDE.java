@@ -42,6 +42,7 @@ public class IDE extends javax.swing.JFrame {
     /**
      * Creates new form IDE
      */
+    
     public IDE() {
         initComponents();
         //  Code to implement line numbers inside the JTextArea
@@ -717,6 +718,15 @@ public class IDE extends javax.swing.JFrame {
                         break;
                 }
             }
+            if ("do".equals(tokensCI.get(index))){
+                index++;
+                //L1 TRUE
+               // intermedio.
+                //L2 FALSE
+                
+                //intermedio.append("L").append(indexLabel).append(":")
+                
+            }
             //Write
             if("write".equals(tokensCI.get(index))){
                 index++;
@@ -765,7 +775,7 @@ public class IDE extends javax.swing.JFrame {
         
         //Obtener valores para código intermedio
         if(node.jjtGetValue() != null){
-            //System.out.println(indent + node.jjtGetValue());
+            System.out.println(indent + node.jjtGetValue());
             tokensCI.add((String) node.jjtGetValue());
         }
         

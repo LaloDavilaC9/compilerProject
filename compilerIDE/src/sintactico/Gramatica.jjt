@@ -165,7 +165,7 @@ void sent_do():{
 
 void sent_read():{}{ read() id() semicolon()}
 void sent_write():{}{write() id() semicolon()}
-void bloque():{}{ lbrace() lista_sent() rbrace()}
+void bloque():{}{ lbrace() lista_sent() rbrace() {jjtThis.value="Bloque";}}
 
 
 void sent_assign():{
@@ -366,7 +366,7 @@ SymbolNode factor():{
 void lbrace():{} {
     <LBRACE>
     {
-        jjtThis.value="{";
+        //jjtThis.value="{";
     }
 }
 
@@ -374,35 +374,35 @@ void lbrace():{} {
 public void rbrace():{} {
     <RBRACE>
     {
-        jjtThis.value="}";
+        //jjtThis.value="}";
     }
 }
 
 public void lbracket():{} {
     <LBRACKET>
     {
-        jjtThis.value="[";
+        //jjtThis.value="[";
     }
 }
 
 public void rbracket():{} {
     <RBRACKET>
     {
-        jjtThis.value="]";
+        //jjtThis.value="]";
     }
 }
 
 public void lparen():{} {
     <LPAREN>
     {
-        jjtThis.value="(";
+        //jjtThis.value="(";
     }
 }
 
 public void rparen():{} {
     <RPAREN>
     {
-        jjtThis.value=")";
+        //jjtThis.value=")";
     }
 }
 

@@ -523,6 +523,9 @@ if (jjtc000) {
       lbrace();
       lista_sent();
       rbrace();
+jjtree.closeNodeScope(jjtn000, true);
+                                                   jjtc000 = false;
+jjtn000.value="Bloque";
     } catch (Throwable jjte000) {
 if (jjtc000) {
                       jjtree.clearNodeScope(jjtn000);
@@ -1198,7 +1201,7 @@ if (jjtc000) {
       jj_consume_token(LBRACE);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value="{";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1214,7 +1217,7 @@ if (jjtc000) {
       jj_consume_token(RBRACE);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value="}";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1230,7 +1233,7 @@ if (jjtc000) {
       jj_consume_token(LBRACKET);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value="[";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1246,7 +1249,7 @@ if (jjtc000) {
       jj_consume_token(RBRACKET);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value="]";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1262,7 +1265,7 @@ if (jjtc000) {
       jj_consume_token(LPAREN);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value="(";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1278,7 +1281,7 @@ if (jjtc000) {
       jj_consume_token(RPAREN);
 jjtree.closeNodeScope(jjtn000, true);
       jjtc000 = false;
-jjtn000.value=")";
+
     } finally {
 if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
