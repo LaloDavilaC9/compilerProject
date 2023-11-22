@@ -645,7 +645,6 @@ public class IDE extends javax.swing.JFrame {
     }
 
     public void codigoIntermedio() {
-        System.out.println(tokensCI);
         StringBuilder intermedio = new StringBuilder();
         int index = 0;
         int indexTemp = 1;
@@ -822,8 +821,7 @@ public class IDE extends javax.swing.JFrame {
             }
             index++;
         }
-        System.out.println(intermedio.toString());
-        System.out.println(indexTemp);
+        textPaneCodIntermedio.setText(intermedio.toString());
     }
 
     //Limpiar pane de analizador sintáctico
@@ -858,7 +856,6 @@ public class IDE extends javax.swing.JFrame {
 
         //Obtener valores para código intermedio
         if (node.jjtGetValue() != null) {
-            System.out.println(indent + node.jjtGetValue());
             if(!"SentWhile".equals((String) node.jjtGetValue())){
                 tokensCI.add((String) node.jjtGetValue());
             }
